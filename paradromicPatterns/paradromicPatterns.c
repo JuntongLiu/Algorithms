@@ -47,7 +47,7 @@
 #include <string.h>
 
 #define BUFF_SIZE 256
-#define MAX_NUM_SAVE 20       // Number of patterns to can be saved
+#define MAX_NUM_SAVE 20       // Number of patterns can be saved
 
 // All paradromic patterns (store 20)
 struct allPPatterns
