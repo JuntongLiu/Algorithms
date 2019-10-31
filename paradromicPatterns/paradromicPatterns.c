@@ -39,7 +39,7 @@
  *                                                                                          2019-10-30
  * 
  *
- *
+ *  Note, comments will be added later. 
  */
 
 #include <stdio.h>
@@ -231,7 +231,6 @@ static int thirdPass(char *str, struct longestPattern *longPat, struct allPPatte
     for(i=0; i < strlength-1; i++)                                // Walk through the string
     {
          expand = 0;
-         numberOfPattern++;
          while(*--fwp == *++bwp)
              expand++;
          fwp++;
@@ -275,6 +274,7 @@ static int thirdPass(char *str, struct longestPattern *longPat, struct allPPatte
          {
              fwp += expand*2;
              i += expand;
+             numberOfPattern++;
          }
          fwp++; bwp++;
     }
