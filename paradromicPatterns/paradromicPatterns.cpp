@@ -37,7 +37,7 @@
  *
  *
  *                                                                        Juntong Liu
- *                                                                                          2019-10-30
+ *                                                                                          2019-11-01
  *
  *
  *  Note, comments to the codes will be added later.
@@ -71,7 +71,7 @@ public:
     void displayData(void);
 
 private:
-                                                                //    void myStringNCopy(char *dest, const char *src, int n);
+                                                                
     int myStringCompare(const char * str1, const char * str2);
     int detectSameLetterPatterns(void);
     int detectEvenParadromicPatterns(void);
@@ -80,7 +80,7 @@ private:
     std::string dataString;
     std::map<std::string, int> paradromicPatterns;
     struct longestPattern longestPattern;
-                                                               //    struct allPPatterns allPPatterns;
+                                                               
 };
 
 ParadromicPatterns::ParadromicPatterns()=default;
