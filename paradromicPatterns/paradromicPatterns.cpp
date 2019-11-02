@@ -99,13 +99,13 @@ int ParadromicPatterns::detectSameLetterPatterns()
     int numberOfPattern = 0;
     int forwardCheck;
     int i, strlength = dataString.length();
-    char *charStr = new char[dataString.length() + 1];
+    char charStr[dataString.length() + 1];
     
     // Convert to C string or use std::string::iterator, like:
     //    std::string::iterator cppfwp, cppbwp;
     //    cppfwp = cppbwp = dataString.begin();
     //    cppbwp++;
-    std::strcpy(charStr, dataString.c_str());
+    strcpy(charStr, dataString.c_str());
     fwp = &charStr[0];                                          // Set the pointers to point to letters
     bwp = &charStr[1];
     
@@ -164,12 +164,12 @@ int ParadromicPatterns::detectEvenParadromicPatterns()
     int numberOfPattern = 0;
     int expand;
     int i, strlength = dataString.length();
-    char *charStr = new char[dataString.length() + 1];
+    char charStr[dataString.length() + 1];
     // Convert to C string or use std::string::iterator, like:
     //    std::string::iterator cppfwp, cppbwp;
     //    cppfwp = cppbwp = dataString.begin();
     //    cppbwp++;
-    std::strcpy(charStr, dataString.c_str());
+    strcpy(charStr, dataString.c_str());
     fwp = &charStr[0];                                                // Set the pointers to point to letters
     bwp = &charStr[1];
     
@@ -241,12 +241,12 @@ int ParadromicPatterns::detectOddParadromicPatterns()
     int numberOfPattern = 0;
     int expand;
     int i, strlength = dataString.length();
-    char *charStr = new char[dataString.length() + 1];
+    char charStr[dataString.length() + 1];
     
     // Convert to C string or use std::string::iterator, like:
     //    std::string::iterator cppfwp, cppbwp;
     //    cppfwp = cppbwp = dataString.begin();
-    std::strcpy(charStr, dataString.c_str());
+    strcpy(charStr, dataString.c_str());
     fwp = bwp = &charStr[0];                                            // Set the pointers to point to letters
     
     for(i=0; i < strlength-1; i++)                                      // Walk through the string
