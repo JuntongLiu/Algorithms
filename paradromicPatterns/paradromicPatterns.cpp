@@ -330,9 +330,11 @@ void ParadromicPatterns::displayData(void)
         for(auto &kv : paradromicPatterns)
             std::cout << "'" << kv.first << "'" <<"  ";
         std::cout << "\n\n";
+        std::cout << "The longest pattern is: '" << longestPattern.longPatt << "' Size=" << longestPattern.size << "\n";
     }
-    std::cout << "The longest pattern is: '" << longestPattern.longPatt << "' Size=" << longestPattern.size << "\n";
-}
+    else
+     std::cout << "There is no paradromic pattern in the string." << "\n";
+ }
 
 int main()
 {
