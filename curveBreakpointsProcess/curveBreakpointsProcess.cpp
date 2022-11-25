@@ -159,8 +159,8 @@ int ProcessCurve::parse_curve_file()
 		/* If a line begin with #, it is a comment line, skip it.
 		 * It is suggested that we should not covert a std::string into a raw char array, instead
 		 * We convert it into a char vector: */
-		std::vector<char> cVect(strInput.begin(), strInput.end());
 #if 0
+		std::vector<char> cVect(strInput.begin(), strInput.end());
       		char *cp = &cVect[0];
       		//auto cp = std::begin(strInput);    // JT, this works also !
 		dprintf("DEBUG:::=============>: Read and process the curve file...\n");
