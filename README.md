@@ -1,2 +1,2 @@
 # Algorithms
-A collection of implementations of some interesting topics
+A collection of C and C++ implementations of some interesting topics
