@@ -76,26 +76,26 @@ class BreakPoint
 
 class ProcessCurve
 {
-	private:
-		std::vector<std::string> curveHDR;
-	   	std::vector<BreakPoint> origCurveBP;
-	   	std::vector<BreakPoint> pickedCurveBP;
-		std::string fileName;
+    private:
+	std::vector<std::string> curveHDR;
+	std::vector<BreakPoint> origCurveBP;
+	std::vector<BreakPoint> pickedCurveBP;
+	std::string fileName;
 
     public:
-	    ProcessCurve() = default;
-	    ~ProcessCurve() = default;
-		int print_BP() const;
-		int get_fileName();
-		int parse_curve_file();     // parse the curve file and pickout header field and breakpoint and store them on curveHDR and vector.
-	    int process_curve_BP();     // do calculation to see if wee need to merge breakpoints to reduce number of the breakpoints.
+	ProcessCurve() = default;
+	~ProcessCurve() = default;
+        int print_BP() const;
+	int get_fileName();
+	int parse_curve_file();     // parse the curve file and pickout header field and breakpoint and store them on curveHDR and vector.
+	int process_curve_BP();     // do calculation to see if wee need to merge breakpoints to reduce number of the breakpoints.
        	int save_processed_BP();    // save processed breakpoints and header into a file.
 };
 
 // Pickout tokens from a string according to delimeters
 void pickOutTokens(const std::string& str, 
-						 std::vector<std::string>& tokens, 
-						 const std::string& delims)
+		std::vector<std::string>& tokens, 
+		const std::string& delims)
 {
     std::size_t start = str.find_first_not_of(delims, 0), end = 0;
     while((end = str.find_first_of(delims, start)) != std::string::npos)
@@ -109,26 +109,26 @@ void pickOutTokens(const std::string& str,
 
 int ProcessCurve::print_BP() const
 {
-		int count{ 0 };
-		//for(BreakPoint element : origCurveBP)
-		for(auto element : origCurveBP)
-		{
-			std::cout << "original BP: the " << count << " element - r is: " << element.sensorUnit << std::endl;
-			std::cout << "original BP: the " << count << " element - t is: " << element.temp << std::endl;
-			count++;
-		}
+	int count{ 0 };
+	//for(BreakPoint element : origCurveBP)
+	for(auto element : origCurveBP)
+	{
+		std::cout << "original BP: the " << count << " element - r is: " << element.sensorUnit << std::endl;
+		std::cout << "original BP: the " << count << " element - t is: " << element.temp << std::endl;
+		count++;
+	}
 
-		std::cout << std::endl;
-		count = 0;
+	std::cout << std::endl;
+	count = 0;
 		
-		for(auto element : pickedCurveBP)
-		{
-			std::cout << "picked BP: the " << count << " element - sensorUnit " << element.sensorUnit << std::endl;
-			std::cout << "picked BP: the " << count << " element - temperature " << element.temp << std::endl;
-			count++;
-		}
+	for(auto element : pickedCurveBP)
+	{
+		std::cout << "picked BP: the " << count << " element - sensorUnit " << element.sensorUnit << std::endl;
+		std::cout << "picked BP: the " << count << " element - temperature " << element.temp << std::endl;
+		count++;
+	}
 
-		return 0;
+	return 0;
 }
 
 
@@ -140,14 +140,14 @@ int ProcessCurve::parse_curve_file()
 	const std::string delim_comment = "#";
 	std::size_t found_pos;
 
-    dprintf("ProcessCurv::process_curv_BP() is called.\n");
+    	dprintf("ProcessCurv::process_curv_BP() is called.\n");
 
-    // open the file for read
-    std::ifstream inf{fileName.c_str()};
-    if(!inf)
-    {
-    	std::cerr << "Unable to open file: " << fileName << std::endl;
-    	return -1;
+    	// open the file for read
+    	std::ifstream inf{fileName.c_str()};
+    	if(!inf)
+    	{
+    		std::cerr << "Unable to open file: " << fileName << std::endl;
+    		return -1;
    	}
 
    	// read and process the curve file
@@ -161,17 +161,18 @@ int ProcessCurve::parse_curve_file()
 		 * We convert it into a char vector: */
 		std::vector<char> cVect(strInput.begin(), strInput.end());
 #if 0
-      	char *cp = &cVect[0];
-      	//auto cp = std::begin(strInput);    // JT, this works also !
-	  	dprintf("DEBUG:::=============>: Read and process the curve file...\n");
-      	while(*cp == ' ' || *cp == '\t')
-         	cp++;
-      	if(*cp == '#')
-         	continue;
+      		char *cp = &cVect[0];
+      		//auto cp = std::begin(strInput);    // JT, this works also !
+		dprintf("DEBUG:::=============>: Read and process the curve file...\n");
+      		while(*cp == ' ' || *cp == '\t')
+         		cp++;
+      		if(*cp == '#')
+         		continue;
 #endif
-      	// skip empty lines
-    	if(strInput.length() == 0){
-        	continue;
+      		// skip empty lines
+    		if(strInput.length() == 0)
+		{
+        		continue;
 		}
 
 		// skip comment lines. It can be: "# xxx", " # xxx" or " #"
@@ -207,8 +208,7 @@ int ProcessCurve::parse_curve_file()
 		pickOutTokens(strInput, tokens, delim);
 
 		if(tokens.size() == 3)
-		{                       // 3 tokens means there is sequence number
-			
+		{                       // 3 tokens means there is sequence number	
 			double r = atof(tokens[1].c_str());
 			double t = atof(tokens[2].c_str());
 			dprintf("DEBUG:: double: r = %f\n", r);
@@ -217,10 +217,10 @@ int ProcessCurve::parse_curve_file()
 		}
 		else if(tokens.size() == 2)
 		{                       // 2 tokens, no sequence number
-				double r = atof(tokens[0].c_str());
-				double t = atof(tokens[1].c_str());
-				BreakPoint bp{r, t};
-				origCurveBP.push_back(bp); 					
+			double r = atof(tokens[0].c_str());
+			double t = atof(tokens[1].c_str());
+			BreakPoint bp{r, t};
+			origCurveBP.push_back(bp); 					
 		}
 	}
 
@@ -241,10 +241,10 @@ int ProcessCurve::get_fileName()
 	else
 		std::cout << "OK, file: " << fileName << " exist!" << std::endl;
 
-   // convert std string into C string:
-   printf("Covert fileName from STD string to C string: %s\n", fileName.c_str());
+   	// convert std string into C string:
+   	printf("Covert fileName from STD string to C string: %s\n", fileName.c_str());
 	
-   return 0;
+   	return 0;
 }
 
 
@@ -276,7 +276,7 @@ try_again:
 	// we control the number fall in between 20 - 200;
 
 	/* The number can not be reduced to less than the following:
-     *  NumberOfBPs / 2 + 1
+     	 * NumberOfBPs / 2 + 1
 	 *  If we have 31 BPs,   we got 31/2 + 2 = 17
 	 */ 
 	if(numOfBreakpoints < (origCurveBP.size() / 2 + 2))
@@ -296,7 +296,7 @@ try_again:
 calculate:
 
 	origIndex = 0; 
-    loops++;
+    	loops++;
 	dprintf("DEBUGG::: 2 =====> LOOP: %d; %s\n", loops, " +++++++++++++");
 
 	// at least there are 3 breakpoints
@@ -306,7 +306,7 @@ calculate:
 	origIndex++;
 	end1BP = &origCurveBP[origIndex];                              // [1], next 
 	dprintf("DEBUGG::::: 3 ======> end1BP->temp = %f\n", end1BP->temp); 
-    start2BP = end1BP;                                             // start breakpoint of second section
+    	start2BP = end1BP;                                             // start breakpoint of second section
    
 	origIndex++;
 	end2BP = &origCurveBP[origIndex];                              // [2], we have a end breakpoint of second section if it is not the end of the curve table
