@@ -56,22 +56,17 @@
 /* We can use struct here, but, use class make thing simpler.
  * A function just use a constructor to create this class object and push it onto a list or vector make 
  * things much simple */
-class BreakPoint
+struct BreakPoint
 {
-	public:
-		double sensorUnit;
-		double temp;
 
-		BreakPoint(double r, double c):sensorUnit{r}, temp{c}
-		{
-		};
-		~BreakPoint() = default;
-		// we can have a function to set the data member. But for now, use constructor
-		void setDat(double x, double y)
-		{
-			sensorUnit = x;
-			temp = y;
-		};
+	double sensorUnit;
+	double temp;
+
+	BreakPoint(double r, double c):sensorUnit{r}, temp{c}
+	{
+	};
+	~BreakPoint() = default;
+
 };
 
 class ProcessCurve
