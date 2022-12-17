@@ -135,6 +135,7 @@ int ProcessCurve::parse_curve_file()
 	const std::string delim = " ";
 	const std::string delim_comment = "#";
 	std::size_t found_pos;
+	std::vector<std::string>tokens;
 
     	dprintf("ProcessCurv::process_curv_BP() is called.\n");
 
@@ -197,7 +198,7 @@ int ProcessCurve::parse_curve_file()
 		if(!bppstarted)
 			bppstarted = true;
 
-		std::vector<std::string>tokens;
+		tokens.clear();
 
 		// Some customer tool add sequence number in the BP section. So, we need to figure out if there is a sequence number
 		// in the BP section. Pick out those tokens
