@@ -91,7 +91,7 @@ class ProcessCurve
 // Pickout tokens from a string according to delimeters
 void pickOutTokens(const std::string &str,
 		   std::vector<std::string>& tokens, 
-		   const std::string &delims)
+		   std::string_view delims)
 {
     std::size_t start = str.find_first_not_of(delims, 0), end = 0;
     while((end = str.find_first_of(delims, start)) != std::string::npos)
