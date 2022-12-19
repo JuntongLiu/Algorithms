@@ -6,16 +6,18 @@
  * 
  * This program analyses a curve file and deduce a maximum slope deviation that can be applied to "merge" those adjacent curve sections that
  * have smallest slope devication from each other, so that the total number of breakpoints describing the curve can be reduced to an acceptable level.
- * The purpose to do this is because that some curve files might have a large number of breakpoints, but the maximum number of breakpoints that a device can 
- * have is limited (for example, LakeShore240 can have 200 maximum).
- * So, if a curve, we have, has more than 200 breakpoints, neighbor sections with acceptable deviations need to be merged to reduce the number of
+ * The purpose to do this is because that some curve files might have a large number of breakpoints, but the maximum number of breakpoints that a device or IOC can 
+ * have is limited.
+ * So, if a curve, we have, has too many breakpoints, neighbor sections with acceptable deviations need to be merged to reduce the number of
  * breakpoints.
  * 
  * This program requires C++17 or up to compile:
  *
  *  g++ -std=c++17 -Wall process_curve.cpp -o process_curve
+ *
  *  or: 
- * 	clang++ -std=c++17 -Wall process_curve.cpp -o process_curve
+ *
+ *  clang++ -std=c++17 -Wall process_curve.cpp -o process_curve
  *   
  * Run the program and following the prompts:
  * 
