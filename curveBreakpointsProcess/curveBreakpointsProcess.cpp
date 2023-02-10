@@ -56,7 +56,7 @@
 #define DBGPRINT(fmt, ...)
 #endif
 
-/* We can use struct here, but, use class make thing simpler.
+/* 
  * A function just use a constructor to create this class object and push it onto a list or vector make 
  * things much simple */
 struct BreakPoint
