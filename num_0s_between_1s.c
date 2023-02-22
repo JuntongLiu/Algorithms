@@ -5,7 +5,7 @@
  * File name: num_0s_between_1s.c
  *
  * This program counts those continuous 0 bits between two 1 bits in an integer 
- * and save them in an array, and print out the length of the longest number of 0 bits between two 1 bits.
+ * and save their length in an array, and print out the length of the longest number of 0 bits between two 1 bits.
  * For example, 
  * 
  * If the integer is 5678 = 1011000101110          The length of longest continuous 0 bits between two 1 bits is: 3
