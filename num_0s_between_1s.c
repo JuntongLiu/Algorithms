@@ -44,14 +44,14 @@ int mycompare( const void* a, const void* b)
 int num_z(int n)
 {
 	int int_size = sizeof(int);
-	int_size *= 8;
 	int result[int_size];
 	int oneb = 1;
 	int integer = n;
 	int count = 0;
 	int resultindex = 0;
 	int checkedb = 0;
-
+	int_size *= 8;
+	
 	while(checkedb < int_size)
 	{
 		if((oneb & integer) == 0)
