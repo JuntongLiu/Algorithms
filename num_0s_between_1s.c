@@ -111,3 +111,37 @@ int main()
 	printf("The length of longest continuous 0s between two 1s is:  %d\n", result);
 	return 0;
 }
+
+
+// ---------------- Following is another program, it use a function to reverses an integer array -----------------
+#if 0 
+
+#include <stdio.h>
+
+void reverse_int_array(int *arr, int len)
+{
+    int tmp_arr[len];
+    int length = len - 1;
+    
+    for(int i=0, j=length; i<len; i++, j--)
+        tmp_arr[i] = arr[j];
+    
+    for(int i=0; i<len; i++)
+        arr[i] = tmp_arr[i];
+
+}
+
+int main()
+{
+    int len = 10;
+    int array[] = {1,2,3,4,5,6,7,8,9,0};
+    for(int i=0; i<len; i++)
+        printf("Original element %d is: %d\n", i, array[i]);
+
+    reverse_int_array(array, len);
+    for(int i=0; i<len; i++)
+    printf("Array after reversing, element %d is: %d\n", i, array[i]);
+
+    return 0; 
+}
+#endif
