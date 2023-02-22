@@ -1,5 +1,5 @@
 # Algorithms
-A collection of C and C++ implementations of some interesting topics
+A collection of C and C++ implementations of some interesting topics.
 See comments in the codes for detail about the programs:
 
 curveBreakpointsProces -- C and C++ programs to process curve file to reduce the number of breakpoints.
