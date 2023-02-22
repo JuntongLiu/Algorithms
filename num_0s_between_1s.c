@@ -24,7 +24,7 @@
  *
  * To compile and run the program:
  *       
- *  $ gcc -Wall num_0s_between_1s.c -o 
+ *  $ gcc -Wall num_0s_between_1s.c -o num_0s_between_1s
  *  $ ./num_0s_between_1s
  *
  */
