@@ -4,8 +4,8 @@
  *  
  * File name: num_0s_between_1s.c
  *
- * This program counts those continuous 0 bits between two 1 bits in an integer 
- * and save their length in an array, and print out the length of the longest number of 0 bits between two 1 bits.
+ * This program check a input integer and counts those continuous 0 bits between two 1 bits in the integer 
+ * and print out the length of the longest number of 0 bits between two 1 bits.
  * For example, 
  * 
  * If the integer is 5678 = 1011000101110          The length of longest continuous 0 bits between two 1 bits is: 3
@@ -16,12 +16,6 @@
  * 
  * If the integer is 8765 = 10001000111101         The length of longest continuous 0 bits between two 1 bits is: 3
  *         
- * 
- * my_compare() is a function for qsort() library function to sort a array in acending order.
- * int arr[6] = {9,2,5,7,8,1};
- * After sorted:
- * int arr[6] = {1,2,5,7,8,9};
- *
  * To compile and run the program:
  *       
  *  $ gcc -Wall num_0s_between_1s.c -o num_0s_between_1s
@@ -31,8 +25,20 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+#include <limits.h>
 
-int mycompare( const void* a, const void* b)
+static void print_binary(unsigned int integer)
+{
+	int i = CHAR_BIT * sizeof integer; /* bits in an integer */
+	while (i--)
+	{
+		putchar('0' + ((integer >> i) & 1));
+	}
+}
+
+static int mycompare( const void* a, const void* b)
 {
    int int_a = * ( (int*) a );
    int int_b = * ( (int*) b );
@@ -41,7 +47,10 @@ int mycompare( const void* a, const void* b)
    return (int_a > int_b) - (int_a < int_b);
 }
 
-int num_z(int n)
+/* find the length of all continuous 0 bits between two 1 bits and store those length in
+ * an array. Return the longest length to the caller.
+ */
+static int num_z(int n)
 {
 	int int_size = sizeof(int);
 	int result[int_size];
@@ -83,7 +92,6 @@ int num_z(int n)
 				count++;
 				checkedb++;
 				oneb <<= 1;
-				printf("3. zbit; checkedb = %d\n", checkedb);
 			}
 			else{
 				result[resultindex] = count;
@@ -106,42 +114,32 @@ int num_z(int n)
 
 int main()
 {
-	int num = 8765;         // 1024; // 123; // 5678;
-	int result = num_z(num);
-	printf("The length of longest continuous 0s between two 1s is:  %d\n", result);
+	char buff[8];
+	int your_number;
+	
+	while(1)
+	{
+		
+		printf("Type in a integer number, or type in q, Q to quit.\n");
+		fgets(buff, sizeof(buff), stdin);
+		if((buff[0] == 'q') || (buff[0] == 'Q'))
+			return 0;
+
+		your_number = atoi(buff);
+		if(your_number == 0)
+		{
+			printf("You have typed in a 0!\n");
+			continue;
+		}
+		
+		printf("You have typed in: %d = ", your_number);
+		print_binary((unsigned int)your_number);
+		printf("\n");
+		int result = num_z(your_number);
+
+		printf("The max continuous 0 bits between two 1 bits = %d\n", result);
+	}
 	return 0;
 }
 
 
-// ---------------- Following is another program, it use a function to reverses an integer array -----------------
-#if 0 
-
-#include <stdio.h>
-
-void reverse_int_array(int *arr, int len)
-{
-    int tmp_arr[len];
-    int length = len - 1;
-    
-    for(int i=0, j=length; i<len; i++, j--)
-        tmp_arr[i] = arr[j];
-    
-    for(int i=0; i<len; i++)
-        arr[i] = tmp_arr[i];
-
-}
-
-int main()
-{
-    int len = 10;
-    int array[] = {1,2,3,4,5,6,7,8,9,0};
-    for(int i=0; i<len; i++)
-        printf("Original element %d is: %d\n", i, array[i]);
-
-    reverse_int_array(array, len);
-    for(int i=0; i<len; i++)
-    printf("Array after reversing, element %d is: %d\n", i, array[i]);
-
-    return 0; 
-}
-#endif
