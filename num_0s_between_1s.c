@@ -52,14 +52,13 @@ static int mycompare( const void* a, const void* b)
  */
 static int num_z(int n)
 {
-	int int_size = sizeof(int);
-	int result[int_size];
 	int oneb = 1;
 	int integer = n;
 	int count = 0;
 	int resultindex = 0;
 	int checkedb = 0;
-	int_size *= 8;
+	int int_size = CHAR_BIT * sizeof(int);
+	int result[int_size];
 	
 	while(checkedb < int_size)
 	{
