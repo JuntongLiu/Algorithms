@@ -130,7 +130,7 @@ int main()
 		your_number = atoi(buff);
 		if(your_number == 0)
 		{
-			printf("You have typed in a 0!\n");
+			printf("Your input is 0 or no-digital! Try again!\n");
 			continue;
 		}
 		
