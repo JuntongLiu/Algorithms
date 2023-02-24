@@ -4,7 +4,7 @@
  *
  * File name: array_operations.c
  * 
- * This program contains functions to do:
+ * This program contains functions to do some basic array operations:
  *   
  *   --- array sorting
  *   --- reverse integer array 
@@ -45,34 +45,28 @@ static void reverse_int_array(int *arr, int len)
 
 }
 
-// reverse the begining "elements" elements and move it to the tail of the integer array
+// reverse the begining "elements" elements and move it to the tail of an integer array
 static void reverse_and_move_section(int *arr, int len, int elements)
 {
-    int *sec1, *sec2;
+   
+    if((elements > len) || (len < 0) || (elements < 0))
+    {
+        printf("Array length or array section length error!\n");
+        return;
+    }
     int tmp_array[len];
-    int sec1_end = elements - 1;
-    sec1 = arr;   // point to the begining of the array
-    sec2 = &arr[sec1_end + 1];
-    int index = len-1;
-  
-    // store the first section in the back reversely
-    for(int i=0; i<elements; i++)
-    {
-        tmp_array[index] = *sec1;
-        sec1++;
-        index--;
-    }
-  
-    // the remain parts
-    for(int i=0; i<(len-elements); i++)
-    {
-        tmp_array[i] = *sec2;
-        sec2++;
-    }
-  
-    // copy to the caller
-    for(int i=0; i<len; i++)
-        arr[i] = tmp_array[i];
+   
+    // store the section to be moved in temp array
+    for(int i=0, *sec1=arr; i<elements; i++, sec1++)
+        tmp_array[i] = *sec1;
+
+    // shift rest elements left to the begining
+    for(int i=0, *sec1=arr, *sec2=&arr[elements]; i<(len-elements); i++, sec1++, sec2++)   
+        *sec1 = *sec2;
+    
+    // put the first section reversely at the tail of the array
+    for(int i=0, *sec2=&arr[len-1]; i<elements; i++, sec2--)
+        *sec2 = tmp_array[i];
 }
 
 /* find even elements in an integer array and store them in an array */
@@ -113,7 +107,7 @@ int main()
     // reverse and move array begining section
     reverse_and_move_section(array, len, 3);
     for(int i=0; i<len; i++)
-        printf("Array after reversed and moved begining section, element %d is: %d\n", i, array[i]);
+        printf("Array after moved the reversed begining section to the tail, element %d is: %d\n", i, array[i]);
 
     // find even elements in an integer array
     find_even_elements(array, len, evenelem, &elen);
