@@ -34,6 +34,11 @@ int mycompare( const void* a, const void* b)
 // reverse an integer array
 static void reverse_int_array(int *arr, int len)
 {
+    if(len <= 0)
+    {
+       printf("Array length error!\n");
+       return;
+    }
     int tmp_arr[len];   
     int length = len - 1;
     
@@ -49,7 +54,7 @@ static void reverse_int_array(int *arr, int len)
 static void reverse_and_move_section(int *arr, int len, int elements)
 {
    
-    if((elements > len) || (len < 0) || (elements < 0))
+    if((elements > len) || (len <= 0) || (elements < 0))
     {
         printf("Array length or array section length error!\n");
         return;
@@ -72,6 +77,11 @@ static void reverse_and_move_section(int *arr, int len, int elements)
 /* find even elements in an integer array and store them in an array */
 static void find_even_elements(int *array, int len, int *evenelem, int *rlen)
 {
+    if(len <= 0)
+    {
+       printf("Array length error!\n");
+       return;
+    }
     int rindex = 0;
     for(int i=0; i<len; i++)
     {
