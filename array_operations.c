@@ -108,7 +108,7 @@ int main()
     // sort the array
     qsort(array, len, sizeof(int), mycompare);
     for(int i=0; i<len; i++)
-        printf("Array after moved section, element %d is: %d\n", i, array[i]);
+        printf("Array after sorted acendingly, element %d is: %d\n", i, array[i]);
 
     // reverse and move array begining section
     reverse_and_move_section(array, len, 3);
