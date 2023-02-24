@@ -106,6 +106,9 @@ static int num_z(int n)
 	if(resultindex == 0)
 		return 0;            // no 0 bits between two 1s in the integer
 	else{
+		for(int i=0; i<resultindex; i++)
+			printf("%d. has %d zero\n", i, result[i]);
+		printf("The shortest length of continuous 0 bits between two 1 bits is: %d\n", result[0]);
 		resultindex--;
 		return (result[resultindex]);
 	}
