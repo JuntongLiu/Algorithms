@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 int mycompare( const void* a, const void* b)
 {
@@ -34,11 +35,8 @@ int mycompare( const void* a, const void* b)
 // reverse an integer array
 static void reverse_int_array(int *arr, int len)
 {
-    if(len <= 0)
-    {
-       printf("Array length error!\n");
-       return;
-    }
+    assert(len > 0);
+    
     int tmp_arr[len];   
     int length = len - 1;
     
@@ -53,12 +51,8 @@ static void reverse_int_array(int *arr, int len)
 // reverse the begining "elements" elements and move it to the tail of an integer array
 static void reverse_and_move_section(int *arr, int len, int elements)
 {
-   
-    if((elements > len) || (len <= 0) || (elements < 0))
-    {
-        printf("Array length or array section length error!\n");
-        return;
-    }
+    assert((len >= elements) || (len > 0) || (elements >= 0));
+    
     int tmp_array[len];
    
     // store the section to be moved in temp array
@@ -77,11 +71,8 @@ static void reverse_and_move_section(int *arr, int len, int elements)
 /* find even elements in an integer array and store them in an array */
 static void find_even_elements(int *array, int len, int *evenelem, int *rlen)
 {
-    if(len <= 0)
-    {
-       printf("Array length error!\n");
-       return;
-    }
+    assert(len > 0);
+   
     int rindex = 0;
     for(int i=0; i<len; i++)
     {
