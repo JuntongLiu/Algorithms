@@ -51,7 +51,7 @@ static void reverse_int_array(int *arr, int len)
 // reverse the begining "elements" elements and move it to the tail of an integer array
 static void reverse_and_move_section(int *arr, int len, int elements)
 {
-    assert((len >= elements) || (len > 0) || (elements >= 0));
+    assert(len >= elements && len > 0 && elements >= 0);
     
     int tmp_array[len];
    
