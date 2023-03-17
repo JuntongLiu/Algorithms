@@ -4,17 +4,17 @@
  *  
  * File name: num_0s_between_1s.c
  *
- * This program check a input integer and counts those continuous 0 bits between two 1 bits in the integer 
- * and print out the length of the longest number of 0 bits between two 1 bits.
+ * This program check a input integer and counts those continuous 0 bits between two 1 bits in the integer, 
+ * save all lengthes in an array and print out the length of the longest number of 0 bits between two 1 bits.
  * For example, 
  * 
- * If the integer is 5678 = 1011000101110          The length of longest continuous 0 bits between two 1 bits is: 3
+ * If the integer is 5678 = 1011000101110          The longest length of continuous 0 bits between two 1 bits is: 3
  *                              ^^^
  *
- * If the integer is 123  = 1111011                The length of longest continuous 0 bits between two 1 bits is: 1
+ * If the integer is 123  = 1111011                The longest length of continuous 0 bits between two 1 bits is: 1
  *                              ^
  * 
- * If the integer is 8765 = 10001000111101         The length of longest continuous 0 bits between two 1 bits is: 3
+ * If the integer is 8765 = 10001000111101         The longest length of continuous 0 bits between two 1 bits is: 3
  *         
  * To compile and run the program:
  *       
@@ -52,15 +52,15 @@ static int mycompare( const void* a, const void* b)
  */
 static int num_z(int n)
 {
+#define INTEGER_SIZE CHAR_BIT * sizeof(int)
 	int oneb = 1;
 	int integer = n;
 	int count = 0;
 	int resultindex = 0;
 	int checkedb = 0;
-	int int_size = CHAR_BIT * sizeof(int);
-	int result[int_size];
+	int result[INTEGER_SIZE/2];
 	
-	while(checkedb < int_size)
+	while(checkedb < INTEGER_SIZE)
 	{
 		if((oneb & integer) == 0)
 		{
@@ -71,9 +71,9 @@ static int num_z(int n)
 			break;
 	}
 
-	while(checkedb < int_size) 
+	while(checkedb < INTEGER_SIZE) 
 	{
-		while(checkedb < int_size)
+		while(checkedb < INTEGER_SIZE)
 		{
 			if((oneb & integer) != 0)
 			{
@@ -84,7 +84,7 @@ static int num_z(int n)
 				break;
 		}
 
-		while(checkedb < int_size)
+		while(checkedb < INTEGER_SIZE)
 		{
 			if((oneb & integer) == 0)         
 			{
