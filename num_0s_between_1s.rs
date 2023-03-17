@@ -4,19 +4,19 @@
  *  
  * File name: num_0s_between_1s.rs
  *
- * This Rust program take a input integer and counts those continuous 0 bits between two 1 bits in the integer 
- * , records the length in an array and print out the length of the longest number of 0 bits between two 1 bits.
+ * This program takes an integer from user and counts those continuous 0 bits between two 1 bits in the integer. 
+ * Those lengthes of continuous 0 bits between two 1 bits will be saved in an arry and the longest length will be printed out.
  * 
- * For example, 
+ * For example, on a machine where integer_size = 32 bits, 
  * 
- * If the integer is 5678 = 1011000101110          The length of longest continuous 0 bits between two 1 bits is: 3
- *                              ^^^
+ *  5678 = 00000000000000000001011000101110      The longest length of continuous 0 bits between two 1 bits is: 3
+ *                                ^^^
  *
- * If the integer is 123  = 1111011                The length of longest continuous 0 bits between two 1 bits is: 1
- *                              ^
+ *   123 = 00000000000000000000000001111011      The longest length of continuous 0 bits between two 1 bits is: 1
+ *                                      ^
  * 
- * If the integer is 8765 = 10001000111101         The length of longest continuous 0 bits between two 1 bits is: 3
- *                           ^^^  
+ *  -123 = 11111111111111111111111110000101      The longest length of continuous 0 bits between two 1 bits is: 4
+ *                                  ^^^^
  * To compile and run the program:
  *       
  *  $ rustc num_0s_between_1s.rs
@@ -83,7 +83,7 @@ fn num_z(n: i32) -> usize {
        }
 }
 
-/*  We can use vector */
+/*  Use array for now, we can use vector later */
 fn sort_array(int_arr: &mut [usize; RSL_LEN]){
     let len = RSL_LEN - 1;
     let mut i: usize = 0;
