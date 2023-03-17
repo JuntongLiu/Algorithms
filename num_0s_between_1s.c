@@ -4,18 +4,20 @@
  *  
  * File name: num_0s_between_1s.c
  *
- * This program check a input integer and counts those continuous 0 bits between two 1 bits in the integer, 
- * save all lengthes in an array and print out the length of the longest number of 0 bits between two 1 bits.
- * For example, 
+ * This program takes an integer from user and counts those continuous 0 bits between two 1 bits in the integer. 
+ * Those lengthes of continuous 0 bits between two 1 bits will be saved in an arry and the longest length will be printed out.
  * 
- * If the integer is 5678 = 1011000101110          The longest length of continuous 0 bits between two 1 bits is: 3
- *                              ^^^
+ * For example, on a machine where integer_size = 32 bits, 
+ * 
+ *  5678 = 00000000000000000001011000101110      The longest length of continuous 0 bits between two 1 bits is: 3
+ *                                ^^^
  *
- * If the integer is 123  = 1111011                The longest length of continuous 0 bits between two 1 bits is: 1
- *                              ^
+ *   123 = 00000000000000000000000001111011      The longest length of continuous 0 bits between two 1 bits is: 1
+ *                                      ^
  * 
- * If the integer is 8765 = 10001000111101         The longest length of continuous 0 bits between two 1 bits is: 3
- *         
+ *  -123 = 11111111111111111111111110000101      The longest length of continuous 0 bits between two 1 bits is: 4
+ *                                  ^^^^
+ *
  * To compile and run the program:
  *       
  *  $ gcc -Wall num_0s_between_1s.c -o num_0s_between_1s
