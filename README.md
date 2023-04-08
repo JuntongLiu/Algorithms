@@ -1,7 +1,7 @@
 # Algorithms
 ## A collection of C, C++ and Rust implementations of some interesting topics.
 
-***See comments in the codes for detail about the programs:***
+***<span style="color:green">See comments in the codes for detail about the programs:</span>***
 
 1. <span style="background-color:green">***curveBreakpointsProces***</span> -- C and C++ programs to process curve file to reduce the number of breakpoints.   
 2. <span style="background-color:green">***paradromicPatterns***</span>    -- C and C++ program to pick out paradromic patterns from a string, like "abba", "cdc", "abccba", etc.   
