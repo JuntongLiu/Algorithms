@@ -11,13 +11,13 @@
  * So, if a curve, we have, has too many breakpoints, neighbor sections with acceptable deviations need to be merged to reduce the number of
  * breakpoints.
  * 
- * This program requires C++17 or up to compile:
+ * This program requires C++20 or up to compile:
  *
- *  g++ -std=c++17 -Wall process_curve.cpp -o process_curve
+ *  g++ -std=c++20 -Wall process_curve.cpp -o process_curve
  *
  *  or: 
  *
- *  clang++ -std=c++17 -Wall process_curve.cpp -o process_curve
+ *  clang++ -std=c++20 -Wall process_curve.cpp -o process_curve
  *   
  * Run the program and following the prompts:
  * 
@@ -32,6 +32,8 @@
 #include <cstdio>
 #include <string>
 #include <string_view>
+#include <algorithm>
+#include <ranges>
 #include <cstring>
 #include <cstdlib>
 #include <cmath>
@@ -86,6 +88,7 @@ class ProcessCurve
         int print_BP() const;
 	int get_fileName();
 	int parse_curve_file();     // parse the curve file and pickout header field and breakpoint and store them on curveHDR and vector.
+	int validate_data();
 	int process_curve_BP();     // do calculation to see if wee need to merge breakpoints to reduce number of the breakpoints.
        	int save_processed_BP();    // save processed breakpoints and header into a file.
 };
@@ -246,6 +249,28 @@ int ProcessCurve::get_fileName()
    	return 0;
 }
 
+
+int ProcessCurve::validate_data(){
+
+	auto checkSeq{
+		[](const BreakPoint& a, const BreakPoint& b)
+		{
+			return (a.sensorUnit  > b.sensorUnit); 
+		}
+	};
+
+	if(!origCurveBP.empty()){
+		std::vector<BreakPoint>::iterator it;
+		it = std::ranges::adjacent_find(origCurveBP, checkSeq);
+		if(it != origCurveBP.end()){
+			std::cout << "File error!" << '\n';
+			return -1;
+		}
+		else
+			std::cout << "Validation passed!" << '\n';
+	}
+	return 0;
+}
 
 int ProcessCurve::process_curve_BP()
 {
@@ -462,6 +487,10 @@ int main()
 	ProcessCurve pc;
 	pc.get_fileName();
 	pc.parse_curve_file();
+	if(pc.validate_data() < 0){
+		std::cout << "Data validation failed!" << '\n';
+		return 0;
+	}
 	pc.process_curve_BP();
 	pc.print_BP();
 
