@@ -29,13 +29,12 @@ fn num_z(n: i32) {
     let mut checkedb = 0;
     const INT_SIZE: i32 = 32;
     let mut count: usize = 0; 
-    let mut maxlong: Vec<usize> = Vec::new(); 
+    let mut lenv: Vec<usize> = Vec::new(); 
     let integer: i32 = n;
     
     while checkedb < INT_SIZE {   
         if oneb & integer == 0 {
             oneb <<= 1;
-            println!("1: oneb is: {}", oneb);
             checkedb += 1;
         }
         else {
@@ -60,20 +59,17 @@ fn num_z(n: i32) {
                 oneb <<= 1;
             }
             else { 
-                  maxlong.push(count);
+                  lenv.push(count);
                   count = 0;
                 break;
             }
         }
     }
 
-    if maxlong.len() > 0 {
-        maxlong.sort();
-        let ln = maxlong.pop();
-        match ln {
-            Some(x) => println!("The maximum length of continous 0s between two 1s is: {}", x),
-            None => (), 
-        }
+    let vlen = lenv.len();
+    if vlen > 0 {
+        lenv.sort();
+        println!("The maximum length of continous 0s between two 1s is: {}", lenv[vlen - 1]);
     }
 }
   
