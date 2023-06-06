@@ -9,7 +9,7 @@
  * the curve can be reduced to user requested level.
  * The purpose to do this is because that some curve files might contain a large number of breakpoints, but the maximum 
  * number of breakpoints that a device can have is limited.
- * However, please note that for a no lieaner??? curve, more breakpoints there are, the better the description will be. 
+ * However, please note that for a no linear graph, more breakpoints there are, the better the description will be. 
  * So, do not reduce curve breakpoints if it is not necessary. 
  * 
  * Each line of the curve file contain 2 float point number separated by whitespace or tab, something like:
@@ -19,7 +19,13 @@
  *  3.  3.333  300.333
  *      .....
  * 
- * There can be a sequence number at the begining of each line.
+ * There can be a sequence number at the begining of each line. Curve file should be in the same directory.
+ * 
+ * To compile and run:
+ *
+ *      $ rustc  curveBreakpointsProcess.rs
+ *      $ ./curvBreakpointsProcess
+ *      (following the prompt)
  */
 
 use std::fs::File;
