@@ -77,8 +77,8 @@ impl ProcessCurve {
                     // Make it more tolerant
                     let elem = sp_elem.into_iter().filter(|item| item.len() > 1).collect::<Vec<&str>>();
                     if elem.len() == 3 {       // with index number
-                        let x = elem[2].parse::<f32>().unwrap();
-                        let y = elem[3].parse::<f32>().unwrap();
+                        let x = elem[1].parse::<f32>().unwrap();
+                        let y = elem[2].parse::<f32>().unwrap();
                         let newbp = BreakPoint::new(x, y);
                         self.orig_bps.push(newbp);
                     }
