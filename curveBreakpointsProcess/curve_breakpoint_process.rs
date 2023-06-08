@@ -266,7 +266,7 @@ impl ProcessCurve {
             },
 
             ADDITION => {
-                while num_bps_to_add != 0 {
+                while num_bps_to_add > 0 {
                     if self.calculate_delta_tangent() != Ok(0) {
                         println!("Error calculate delta-tangent!");
                         panic!("Error!");
