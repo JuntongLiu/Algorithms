@@ -8,3 +8,5 @@ Rust language need to be installed to build and run this program.
   $ cargo run
   and following the prompt
 ~~
+## Here is a screenshot
+./gui.png
