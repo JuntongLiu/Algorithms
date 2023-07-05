@@ -3,10 +3,11 @@
 Rust language need to be installed to build and run this program.
 ~~~
 
-  install Rust language in your computer.
-  get the codes in this folder to your local.
+  Install Rust language in your computer.
+  Get the codes and run it:
 
-  $ cd curve_process_visualization
+  $ git clone https://github.com/JuntongLiu/Algorithms.git
+  $ cd Algorithms/curve_process_visualization/
   $ cargo run
 
   and following the prompt
