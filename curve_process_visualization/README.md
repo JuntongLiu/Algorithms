@@ -1,4 +1,4 @@
-![image](https://github.com/JuntongLiu/Algorithms/assets/49035076/8a3a987c-6c63-4147-b95a-b67e487dd783)
+
 ## This is a Rust GUI program which processes and visualizes curve breakpoints. 
 Rust language need to be installed to build and run this program.
 ~~~
@@ -7,6 +7,7 @@ Rust language need to be installed to build and run this program.
   $ cd curve_process_visualization
   $ cargo run
   and following the prompt
-~~
+~~~
 ## Here is a screenshot
-file:///home/juntong/my-programs/rust/GUI_libs/curve_process_visualization/gui.png
+
+![image](https://github.com/JuntongLiu/Algorithms/assets/49035076/8a3a987c-6c63-4147-b95a-b67e487dd783)
