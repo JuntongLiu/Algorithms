@@ -166,7 +166,7 @@ impl ProcessCurve {
         let num_bps = orig_len as i32 + num_bps_to_update;
 
         if num_bps_to_update == 0 {
-                println!("The number of break points is equal to you required, no need to do anything!");
+                //println!("The number of break points is equal to you required, no need to do anything!");
                 return Ok(0); 
         }
         if (num_bps_to_update < 0) && (num_bps >= 2) {
