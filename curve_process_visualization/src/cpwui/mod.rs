@@ -1,3 +1,13 @@
+/* 
+ * Juntong Liu
+ *         2023.Jun 28
+ * 
+ * File name:    curve_process_visualization/src/cpwui/mod.rs
+ * version 0.1
+ * 
+ * This program has been coded just for fine. It has not been tested.  Use it is at your own risk.
+ *
+ **/
 
 use std::fs::File;
 use std::io::{self, BufRead};
