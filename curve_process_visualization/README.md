@@ -1,5 +1,5 @@
 
-## This is a Rust GUI program which processes and visualizes curve breakpoints. 
+## This is a Rust program with GUI which processes and visualizes curve breakpoints. 
 Rust language need to be installed to build and run this program.
 ~~~
 
