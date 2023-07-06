@@ -176,7 +176,6 @@ impl ProcessCurve {
         let num_bps = orig_len as i32 + num_bps_to_update;
 
         if num_bps_to_update == 0 {
-                //println!("The number of break points is equal to you required, no need to do anything!");
                 return Ok(0); 
         }
         if (num_bps_to_update < 0) && (num_bps >= 2) {
@@ -185,7 +184,7 @@ impl ProcessCurve {
         else if num_bps_to_update > 0 {
                 operation_flag = ADDITION;
                 num_bps_to_add = num_bps_to_update as u32;
-                println!("{} breakpoints will be added to smooth the curve.", num_bps_to_update);
+                //println!("{} breakpoints will be added to smooth the curve.", num_bps_to_update);
         }
         else if num_bps < 2 {
                 println!("{}Error! The minimum number of breakpoint one can have is 2  Try again!", '\n');
@@ -255,10 +254,10 @@ impl ProcessCurve {
         Ok(0)
     }
 
-    pub fn print_result(&mut self) {    // make it mutable so we can fill plot_bps[]
+    pub fn print_result(&mut self) {
         println!("{}{} breakpoints have been picked. They are: {}", '\n', self.orig_bps.len(), '\n'); 
         for i in 0..self.orig_bps.len(){
-            println!("{}.)   {}  {} ", i, self.orig_bps[i].0 /*sensor_unit*/, self.orig_bps[i].1 /*temp*/);  
+            println!("{}.)   {}  {} ", i, self.orig_bps[i].0, self.orig_bps[i].1);  
         }
         println!("");
 
