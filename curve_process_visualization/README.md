@@ -3,7 +3,9 @@
 Rust language need to be installed to build and run this program.
 ~~~
 
-  If one does not have Rust programming language installed, the following link provides detail information about how to install it:
+  If one does not have Rust programming language installed, the following link has detail
+  information about how to install it:
+
   https://doc.rust-lang.org/book/ch01-01-installation.html
 
   Get the codes and run it:
