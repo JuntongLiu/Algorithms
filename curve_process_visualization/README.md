@@ -1,9 +1,11 @@
 
-## This is a Rust program with GUI which processes and visualizes curve breakpoints. 
+## This is a Rust program with GUI which processes and visualizes curve with breakpoints. 
 Rust language need to be installed to build and run this program.
 ~~~
 
-  Install Rust language in your computer.
+  If one does not have Rust programming language installed, the following link provides detail information about how to install it:
+  https://doc.rust-lang.org/book/ch01-01-installation.html
+
   Get the codes and run it:
 
   $ git clone https://github.com/JuntongLiu/Algorithms.git
