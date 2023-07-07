@@ -1,6 +1,6 @@
 /* 
  * Juntong Liu
- *         2023.Jun 28
+ *         2023.June.28
  * 
  * File name:    curve_process_visualization/src/cpwui/mod.rs
  * version 0.1
@@ -49,12 +49,12 @@ impl ProcessCurve {
                                     .into_iter()
                                     .filter(|item| item.len() > 1)
                                     .collect::<Vec<&str>>();
-                    if elem.len() == 3 {       // with index number
+                    if elem.len() == 3 {       // with index
                         let x = elem[1].parse::<f32>().unwrap();
                         let y = elem[2].parse::<f32>().unwrap();
                         self.orig_bps.push((x, y));
                     }
-                    else if elem.len() == 2 {  // without index number
+                    else if elem.len() == 2 {  // without index
                         let x = convert_str_to_number(&elem[0]);
                         if x.is_err() {
                             panic!("Error convert x from string to number!");
@@ -119,7 +119,7 @@ impl ProcessCurve {
         Ok(0)
     }
 
-      fn calculate_delta_tangent(&mut self) -> Result<u16, i16> {
+    fn calculate_delta_tangent(&mut self) -> Result<u16, i16> {
         const FIRST: usize = 0;
         const SECOND: usize = 1;
         const THIRD: usize = 2;
@@ -184,7 +184,6 @@ impl ProcessCurve {
         else if num_bps_to_update > 0 {
                 operation_flag = ADDITION;
                 num_bps_to_add = num_bps_to_update as u32;
-                //println!("{} breakpoints will be added to smooth the curve.", num_bps_to_update);
         }
         else if num_bps < 2 {
                 println!("{}Error! The minimum number of breakpoint one can have is 2  Try again!", '\n');
@@ -213,7 +212,7 @@ impl ProcessCurve {
                     let bigest_delta = self.delta_tanget[index];
                     let temp = self.index_vec.iter().find(|&elem| elem.1 == bigest_delta);
                     let (index_for_insert, _) = temp.expect("Error, try to find index to add BP!");
-                    let section_dvd: f32 = 1.0/3.0; //1.0/4.0;   
+                    let section_dvder: f32 = 3.0; // TODO: make this global and setable from GUI later   
                     let ratio: f32;
                     let delta_x1 = self.orig_bps[*index_for_insert + SECOND].0 - self.orig_bps[*index_for_insert + FIRST].0;
                     let delta_x2 = self.orig_bps[*index_for_insert + THIRD].0 - self.orig_bps[*index_for_insert + SECOND].0;
@@ -231,14 +230,14 @@ impl ProcessCurve {
                     }
 
                     let x1 = self.orig_bps[*index_for_insert].0 
-                        + (self.orig_bps[*index_for_insert + 1].0  - self.orig_bps[*index_for_insert].0) * (1.0 - section_dvd); 
+                        + (self.orig_bps[*index_for_insert + 1].0  - self.orig_bps[*index_for_insert].0) * (1.0 - 1.0/section_dvder); 
                     let y1 = self.orig_bps[*index_for_insert].1 
-                        + (self.orig_bps[*index_for_insert + 1].1  - self.orig_bps[*index_for_insert].1) * (1.0 - section_dvd); 
+                        + (self.orig_bps[*index_for_insert + 1].1  - self.orig_bps[*index_for_insert].1) * (1.0 - 1.0/section_dvder); 
 
                     let x2 = self.orig_bps[*index_for_insert + 1].0 
-                        + (self.orig_bps[*index_for_insert + 2].0  - self.orig_bps[*index_for_insert + 1].0) * ratio * section_dvd;
+                        + (self.orig_bps[*index_for_insert + 2].0  - self.orig_bps[*index_for_insert + 1].0) * ratio / section_dvder;
                     let y2 = self.orig_bps[index_for_insert + 1].1 
-                        + (self.orig_bps[*index_for_insert + 2].1  - self.orig_bps[*index_for_insert + 1].1) * ratio * section_dvd;
+                        + (self.orig_bps[*index_for_insert + 2].1  - self.orig_bps[*index_for_insert + 1].1) * ratio / section_dvder;
        
                     self.orig_bps.insert(index_for_insert + 1, (x1, y1)); 
                     self.orig_bps.insert(index_for_insert + 3, (x2, y2));
@@ -265,13 +264,14 @@ impl ProcessCurve {
 
     pub fn get_max_x(&self) -> f32 {
         if self.orig_bps.len() > 3 {   // at least has 3 BPs
-            // find the max x and y
+            // find the max
             self.orig_bps[self.orig_bps.len()-1].0 
         }
         else {
             10.0 // we return a 10 to keep the coord open
         }
     }
+    
     pub fn get_max_y(&self) -> f32 {
         if self.orig_bps.len() > 3 {
             self.orig_bps[self.orig_bps.len()-1].1
