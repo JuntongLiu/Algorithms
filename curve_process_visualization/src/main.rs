@@ -1,6 +1,6 @@
 /* 
  * Juntong Liu
- *         2023.Jun 28
+ *         2023.June.28
  * 
  * File name: curve_process_visualization/src/main.rs   
  * version 0.1
