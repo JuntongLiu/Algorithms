@@ -24,6 +24,7 @@ pub struct ProcessCurve {
     delta_tanget: Vec<f32>,
     index_vec: Vec<(usize, f32)>,
     pub file_name: String,
+    pub section_dvder: f32,    // TODO: make this setable from GUI
 }
 
 
@@ -34,6 +35,7 @@ impl ProcessCurve {
             delta_tanget: Vec::new(),
             index_vec: Vec::new(),
             file_name: String::new(),
+            section_dvder: 3.0,
         }
     }
 
@@ -211,8 +213,7 @@ impl ProcessCurve {
                     let index = self.delta_tanget.len() - 1;
                     let bigest_delta = self.delta_tanget[index];
                     let temp = self.index_vec.iter().find(|&elem| elem.1 == bigest_delta);
-                    let (index_for_insert, _) = temp.expect("Error, try to find index to add BP!");
-                    let section_dvder: f32 = 3.0; // TODO: make this global and setable from GUI later   
+                    let (index_for_insert, _) = temp.expect("Error, try to find index to add BP!");   
                     let ratio: f32;
                     let delta_x1 = self.orig_bps[*index_for_insert + SECOND].0 - self.orig_bps[*index_for_insert + FIRST].0;
                     let delta_x2 = self.orig_bps[*index_for_insert + THIRD].0 - self.orig_bps[*index_for_insert + SECOND].0;
@@ -230,14 +231,14 @@ impl ProcessCurve {
                     }
 
                     let x1 = self.orig_bps[*index_for_insert].0 
-                        + (self.orig_bps[*index_for_insert + 1].0  - self.orig_bps[*index_for_insert].0) * (1.0 - 1.0/section_dvder); 
+                        + (self.orig_bps[*index_for_insert + 1].0  - self.orig_bps[*index_for_insert].0) * (1.0 - 1.0/self.section_dvder); 
                     let y1 = self.orig_bps[*index_for_insert].1 
-                        + (self.orig_bps[*index_for_insert + 1].1  - self.orig_bps[*index_for_insert].1) * (1.0 - 1.0/section_dvder); 
+                        + (self.orig_bps[*index_for_insert + 1].1  - self.orig_bps[*index_for_insert].1) * (1.0 - 1.0/self.section_dvder); 
 
                     let x2 = self.orig_bps[*index_for_insert + 1].0 
-                        + (self.orig_bps[*index_for_insert + 2].0  - self.orig_bps[*index_for_insert + 1].0) * ratio / section_dvder;
+                        + (self.orig_bps[*index_for_insert + 2].0  - self.orig_bps[*index_for_insert + 1].0) * ratio / self.section_dvder;
                     let y2 = self.orig_bps[index_for_insert + 1].1 
-                        + (self.orig_bps[*index_for_insert + 2].1  - self.orig_bps[*index_for_insert + 1].1) * ratio / section_dvder;
+                        + (self.orig_bps[*index_for_insert + 2].1  - self.orig_bps[*index_for_insert + 1].1) * ratio / self.section_dvder;
        
                     self.orig_bps.insert(index_for_insert + 1, (x1, y1)); 
                     self.orig_bps.insert(index_for_insert + 3, (x2, y2));
