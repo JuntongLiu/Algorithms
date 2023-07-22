@@ -127,7 +127,7 @@ impl ProcessCurve {
         const FIRST: usize = 0;
         const SECOND: usize = 1;
         const THIRD: usize = 2;
-        const CLOSED_SEC: f32 = 88888.0.
+        const CLOSED_SEC: f32 = 88888.0;
         let mut orig_index = 0;
         let orig_len = self.orig_bps.len();
         
