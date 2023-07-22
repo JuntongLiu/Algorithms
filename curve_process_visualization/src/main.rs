@@ -69,7 +69,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
 		    Message::Choice1Msg => {
 		        if pcbp.get_divider_flag() == false {
-			    let choice_v = ui.choice_1.choice().unwrap().parse::<f32>()
+			    let choice_v = ui.choice_1.choice().unwrap().parse::<f32>();
 			    if choice_v != Ok(-1.0) {
 				ui.choice_1.set_label(&ui.choice_1.choice().unwrap());
 				if choice_v != Ok(pcbp.section_dvder) {
