@@ -49,8 +49,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     Message::Increment => {
 			if pcbp.process_bps(1) == Ok(0) {
                         	ui.frame_num_bps.set_label(&(label +1).to_string());
-                    		if pcbp.get_driver_flag() == false {
-					pcbp.set_driver_flag();
+                    		if pcbp.get_divider_flag() == false {
+					pcbp.set_divider_flag();
 				}
 			}
 			else {
