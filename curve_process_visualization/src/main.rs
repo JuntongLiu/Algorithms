@@ -33,6 +33,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let x_max = pcbp.get_max_x();
     let y_max = pcbp.get_max_y();
+    let x_mini = pcbp.get_mini_x();
+    let y_mini = pcbp.get_mini_y();  
   
     let (s, r) = app::channel::<Message>();
     ui.plus_but.emit(s, Message::Increment);
@@ -92,7 +94,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 			.caption(&pcbp.file_name, ("sans-serif", 40).into_font())
 			.x_label_area_size(20)
 			.y_label_area_size(60)
-                        .build_cartesian_2d(0f32..x_max, 0f32..y_max)?;
+                        .build_cartesian_2d(x_mini..x_max, y_mini..y_max)?;
             chart.configure_mesh()
 			.x_labels(5)
 			.y_labels(5)
