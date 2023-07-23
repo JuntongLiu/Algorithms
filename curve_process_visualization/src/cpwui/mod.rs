@@ -295,7 +295,7 @@ impl ProcessCurve {
                     max_x = elem.0;
                 }
             }
-            max_x + 3_f32
+            max_x + 1_f32
         }
         else {
             10_f32
@@ -310,7 +310,7 @@ impl ProcessCurve {
                     mini_x = elem.0;
                 }
             }
-            mini_x - 3_f32
+            mini_x - 1_f32
         }
         else {
             -5_f32
@@ -325,7 +325,7 @@ impl ProcessCurve {
                     max_y = elem.1;
                 }
             }
-            max_y + 3_f32
+            max_y + 1_f32
         }
         else {
             10_f32
@@ -340,7 +340,7 @@ impl ProcessCurve {
                     mini_y = elem.1;
                 }
             }
-            mini_y - 3_f32
+            mini_y - 1_f32
         }
         else {
             10_f32
