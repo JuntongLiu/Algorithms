@@ -3,7 +3,7 @@
  *         2023.June.28
  * 
  * File name:    curve_process_visualization/src/cpwui/mod.rs
- * version 0.11
+ * version 0.111
  * 
  * This program has been coded just for fine. It has not been tested.  Use it is at your own risk.
  *
@@ -102,7 +102,7 @@ impl ProcessCurve {
     fn validate_bps(&mut self) -> Result<u32, i32> {
         for n in 0..self.orig_bps.len() - 1 {
             if self.orig_bps[n].0 > self.orig_bps[n+1].0  {
-                println!("Curve file Error!!!! x must be in increasing order!");
+                println!("Curve File Error!!!! x must be in increasing order!");
                 return Err(-1);                
             }
         };
@@ -235,7 +235,6 @@ impl ProcessCurve {
                         continue;
                     }
                 }
-
 
                 let ratio: f32;
                 let delta_x1 = self.orig_bps[index_for_insert + SECOND].0 - self.orig_bps[index_for_insert + FIRST].0;
