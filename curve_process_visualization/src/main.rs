@@ -31,11 +31,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         panic!("Error running program!");
     }    
 
-    let x_max = pcbp.get_max_x();
-    let y_max = pcbp.get_max_y();
-    let x_mini = pcbp.get_mini_x();
-    let y_mini = pcbp.get_mini_y();  
-  
+    let (x_mini, x_max, y_mini, y_max) = pcbp.get_xy();
     let (s, r) = app::channel::<Message>();
     ui.plus_but.emit(s, Message::Increment);
     ui.minus_but.emit(s, Message::Decrement);
@@ -87,7 +83,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 	      }
 	  }
         
-          let root = BitMapBackend::with_buffer(&mut buf, (670/*350 800*/, 480/*300  600*/)).into_drawing_area();     // BMB
+          let root = BitMapBackend::with_buffer(&mut buf, (670/*350 800*/, 480/*300  600*/)).into_drawing_are
+a();     // BMB
           root.fill(&WHITE)?;
           root.margin(10, 10, 10, 10);
           let mut chart = ChartBuilder::on(&root)
@@ -114,7 +111,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 &|c, s, st| {
                     return EmptyElement::at(c)
                     + Circle::new((0,0),s,st.filled())
-                    + Text::new(format!("{:?}", c), (10, 0), ("sans-serif", 10).into_font());  //(display the x, y coordinator)
+                    + Text::new(format!("{:?}", c), (10, 0), ("sans-serif", 10).into_font());  //(display the
+ x, y coordinator)
                 },
             ))?;
     
