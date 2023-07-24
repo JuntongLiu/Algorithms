@@ -100,20 +100,12 @@ impl ProcessCurve {
     }
 
     fn validate_bps(&mut self) -> Result<u32, i32> {
-        const TAKE_AWAY: f32 = -9999.9999;
         for n in 0..self.orig_bps.len() - 1 {
             if self.orig_bps[n].0 > self.orig_bps[n+1].0  {
-                println!("Error, x is not in acending order!");
+                println!("Curve file Error!!!! x must be in increasing order!");
                 return Err(-1);                
             }
-
-            if self.orig_bps[n].0 == self.orig_bps[n+1].0 {
-                println!("One bp will be taken away! Adjecent bps should not has same x");
-                self.orig_bps[n+1].1 = TAKE_AWAY;
-            }
         };
-
-        self.orig_bps.retain(|&elem| elem.1 != TAKE_AWAY);
 
         Ok(0)
     }
@@ -122,7 +114,6 @@ impl ProcessCurve {
         const FIRST: usize = 0;
         const SECOND: usize = 1;
         const THIRD: usize = 2;
-        const CLOSED_SEC: f32 = 88888.0;
         let mut orig_index = 0;
         let orig_len = self.orig_bps.len();
         
@@ -136,23 +127,27 @@ impl ProcessCurve {
             let delta_y2 = self.orig_bps[orig_index + THIRD].1 - self.orig_bps[orig_index + SECOND].1;
             
             let alfa: f32;
-            if delta_x1 != 0_f32 && delta_x2 != 0_f32 {
-                
-                let alfa1 = delta_y1.atan2(delta_x1).to_degrees();
-                let alfa2 = delta_y2.atan2(delta_x2).to_degrees();
-
-                if (delta_y1 >= 0_f32 && delta_y2 >= 0_f32) || (delta_y1 <= 0_f32 && delta_y2 <= 0_f32) {
+            let alfa1 = delta_y1.atan2(delta_x1).to_degrees();
+            let alfa2 = delta_y2.atan2(delta_x2).to_degrees();
+            if (delta_y1 >= 0_f32 && delta_y2 >= 0_f32) || (delta_y1 <= 0_f32 && delta_y2 <= 0_f32) {
+                if alfa1.abs() != 90_f32 && alfa2.abs() != 90_f32 {
                     alfa = 180_f32 - (alfa1 - alfa2).abs();
                     self.delta_tanget.push(alfa);
                 }
-                else if (delta_y1 >= 0_f32 && delta_y2 <= 0_f32) || (delta_y1 <= 0_f32 && delta_y2 >= 0_f32) { 
-                    alfa = 180_f32 - (alfa1.abs() + alfa2.abs());
+                else { 
+                    alfa = alfa1.abs() + alfa2.abs();
                     self.delta_tanget.push(alfa);
                 }
             }
-            else { 
-                    let alfa = CLOSED_SEC;
+            else if (delta_y1 >= 0_f32 && delta_y2 <= 0_f32) || (delta_y1 <= 0_f32 && delta_y2 >= 0_f32) {
+                if alfa1.abs() != 90_f32 && alfa2.abs() != 90_f32 {
+                    alfa = 180_f32 - (alfa1.abs() + alfa2.abs());
                     self.delta_tanget.push(alfa);
+                }
+                else {
+                    alfa = (alfa1 + alfa2).abs();
+                    self.delta_tanget.push(alfa);
+                }
             }
             if orig_index + 1 <= orig_len - 1 {
                 orig_index += 1;
@@ -287,66 +282,37 @@ impl ProcessCurve {
 
     }
 
-    pub fn get_max_x(&self) -> f32 {
-       if self.orig_bps.len() > 3 {
-            let mut max_x: f32 = 0.0;
+    pub fn get_xy(&self) -> (f32, f32, f32, f32) {
+        let mut max_x: f32 = 0_f32;
+        let mut mini_x: f32 = 0_f32;
+        let mut max_y: f32 = 0_f32;
+        let mut mini_y: f32 = 0_f32;
+        if self.orig_bps.len() > 3 {
             for elem in &self.orig_bps {
                 if elem.0 > max_x {
                     max_x = elem.0;
                 }
-            }
-            max_x + 1_f32
-        }
-        else {
-            10_f32
-        }
-    }
-    
-    pub fn get_mini_x(&self) -> f32 {
-        if self.orig_bps.len() > 3 {
-            let mut mini_x: f32 = 88888888.0;
-            for elem in &self.orig_bps {
                 if elem.0 < mini_x {
                     mini_x = elem.0;
                 }
-            }
-            mini_x - 1_f32
-        }
-        else {
-            -5_f32
-        }
-    }
-
-    pub fn get_max_y(&self) -> f32 {
-       if self.orig_bps.len() > 3 {
-            let mut max_y: f32 = 0.0;
-            for elem in &self.orig_bps {
                 if elem.1 > max_y {
                     max_y = elem.1;
                 }
-            }
-            max_y + 1_f32
-        }
-        else {
-            10_f32
-        }
-    }
-    
-    pub fn get_mini_y(&self) -> f32 {  
-        if self.orig_bps.len() > 3 {
-            let mut mini_y: f32 = 8888888.0;
-            for elem in &self.orig_bps {
                 if elem.1 < mini_y {
                     mini_y = elem.1;
                 }
             }
-            mini_y - 1_f32
+            max_x += 1_f32;
+            mini_x -= 1_f32;
+            max_y += 1_f32;
+            mini_y -= 1_f32;
+            (mini_x, max_x, mini_y, max_y)
         }
         else {
-            10_f32
+            (0_f32, 10_f32, 0_f32, 10_f32)
         }
     }
-    
+
     pub fn set_divider(&mut self, dvder: f32) {     
             self.section_dvder = dvder;
     }
