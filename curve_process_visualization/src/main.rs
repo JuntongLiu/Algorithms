@@ -3,7 +3,7 @@
  *         2023.June.28
  * 
  * File name: curve_process_visualization/src/main.rs   
- * version 0.11
+ * version 0.111
  * 
  * This program has been coded just for fine. It has not been tested.  Use it is at your own risk.
  *
@@ -83,8 +83,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 	      }
 	  }
         
-          let root = BitMapBackend::with_buffer(&mut buf, (670/*350 800*/, 480/*300  600*/)).into_drawing_are
-a();     // BMB
+          let root = BitMapBackend::with_buffer(&mut buf, (670, 480)).into_drawing_area();
           root.fill(&WHITE)?;
           root.margin(10, 10, 10, 10);
           let mut chart = ChartBuilder::on(&root)
@@ -111,8 +110,7 @@ a();     // BMB
                 &|c, s, st| {
                     return EmptyElement::at(c)
                     + Circle::new((0,0),s,st.filled())
-                    + Text::new(format!("{:?}", c), (10, 0), ("sans-serif", 10).into_font());  //(display the
- x, y coordinator)
+                    + Text::new(format!("{:?}", c), (10, 0), ("sans-serif", 10).into_font());
                 },
             ))?;
     
