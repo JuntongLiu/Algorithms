@@ -100,13 +100,35 @@ impl ProcessCurve {
     }
 
     fn validate_bps(&mut self) -> Result<u32, i32> {
-        for n in 0..self.orig_bps.len() - 1 {
-            if self.orig_bps[n].0 > self.orig_bps[n+1].0  {
-                println!("Curve File Error!!!! x must be in increasing order!");
-                return Err(-1);                
+        let vec_len = self.orig_bps.len();
+        for n in 0..vec_len {
+            if n + 1 < vec_len { 
+                if self.orig_bps[n].0 > self.orig_bps[n+1].0  {
+                    println!("{}Curve File Error! x must be in increasing order!!! Correct the curve file and try again!{}", '\n', '\n');
+                    return Err(-1);  
+                }
+                if (self.orig_bps[n].0 == self.orig_bps[n+1].0) && (self.orig_bps[n].1 == self.orig_bps[n+1].1) {
+                    println!("{}Curve File Error! Duplicated breakpoints should be deleted!{}", '\n', '\n');
+                    return Err(-1);
+                }
+            }
+            if n + 2 < vec_len {
+                if (self.orig_bps[n].0 == self.orig_bps[n+1].0) && (self.orig_bps[n+1].0 == self.orig_bps[n+2].0) {
+                    if self.orig_bps[n].1 > self.orig_bps[n+1].1 {
+                        if self.orig_bps[n+2].1 >= self.orig_bps[n+1].1 {
+                            println!("{}Curve File Error! Line section should not turn 180 degree backward!{}", '\n', '\n');
+                            return Err(-1);
+                        }
+                    }
+                    if self.orig_bps[n].1 < self.orig_bps[n+1].1 {
+                        if self.orig_bps[n+2].1 <= self.orig_bps[n+1].1 {
+                            println!("{}Curve File Error! Line section should not turn 180 degree backward!{}", '\n', '\n');
+                            return Err(-1);
+                        }
+                    }
+                }
             }
         };
-
         Ok(0)
     }
 
