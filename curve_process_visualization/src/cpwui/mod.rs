@@ -21,6 +21,7 @@ use crate::ui::{UserInterface};
 #[derive(Clone)]     
 pub struct ProcessCurve {
     pub orig_bps: Vec<(f32, f32)>,
+    pub backup_reset: Vec<(f32, f32)>,
     delta_tanget: Vec<f32>,
     index_vec: Vec<(usize, f32)>,
     pub file_name: String,
@@ -33,6 +34,7 @@ impl ProcessCurve {
     pub fn new() -> Self {      // constructor
         Self {
             orig_bps: Vec::new(),
+            backup_reset: Vec::new(),
             delta_tanget: Vec::new(),
             index_vec: Vec::new(),
             file_name: String::new(),
@@ -129,6 +131,8 @@ impl ProcessCurve {
                 }
             }
         };
+        self.backup_reset = self.orig_bps.clone();
+        
         Ok(0)
     }
 
@@ -344,6 +348,9 @@ impl ProcessCurve {
     
     pub fn set_divider_flag(&mut self) {
         self.divider_hasbeen_set = true;
+    }
+    pub fn reset_bps(&mut self) {
+        self.orig_bps = self.backup_reset.to_vec();
     }
 }
 
