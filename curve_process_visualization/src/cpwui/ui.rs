@@ -83,6 +83,7 @@ impl UserInterface {
 	    minus_but,
 	    plus_but,
 	    choice_1,
+	    reset_but,
 	}
     }
 }
