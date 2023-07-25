@@ -20,6 +20,7 @@ pub enum Message {
     Increment,
     Decrement,
     Choice1Msg,
+    ResetMsg,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -36,7 +37,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     ui.plus_but.emit(s, Message::Increment);
     ui.minus_but.emit(s, Message::Decrement);
     ui.choice_1.emit(s, Message::Choice1Msg);
-
+    ui.reset_but.emit(s, Message::ResetMsg);
+	
     let mut buf = vec![0u8; 670 * 480 * 3];
 
     while app.wait() {
@@ -80,6 +82,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 	    }
             		}
 		    }
+		    Message::ResetMsg => {
+                    pcbp.reset_bps();
+                    let label = pcbp.orig_bps.len();
+                    ui.frame_num_bps.set_label(&(label).to_string());
+                    pcbp.divider_hasbeen_set = false;
+                }
 	      }
 	  }
         
