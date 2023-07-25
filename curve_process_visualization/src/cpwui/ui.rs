@@ -33,6 +33,7 @@ pub struct UserInterface {
     pub minus_but: Button,
     pub plus_but: Button,
     pub choice_1: Choice,
+    pub reset_but: Button,
 }
 
 impl UserInterface {
