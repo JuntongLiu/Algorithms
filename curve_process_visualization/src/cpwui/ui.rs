@@ -71,6 +71,10 @@ impl UserInterface {
 	choice_1.set_label_size(10);
 	choice_1.set_text_size(10);
 	win.add(&choice_1);
+	let mut reset_but = Button::new(740, 290, 55, 25, None);
+	reset_but.set_label("Reset");
+	win.resizable(&reset_but);
+	win.add(&reset_but);
 	Self {
 	    win,
 	    frame_for_drawing,
