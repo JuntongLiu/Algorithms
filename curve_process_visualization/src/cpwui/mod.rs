@@ -350,6 +350,7 @@ impl ProcessCurve {
         self.divider_hasbeen_set = true;
     }
     pub fn reset_bps(&mut self) {
+        self.orig_bps.clear();
         self.orig_bps = self.backup_reset.to_vec();
     }
 }
