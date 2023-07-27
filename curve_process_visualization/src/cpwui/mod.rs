@@ -271,27 +271,36 @@ impl ProcessCurve {
                 let delta_x2 = self.orig_bps[index_for_insert + THIRD].0 - self.orig_bps[index_for_insert + SECOND].0;
                 let delta_y1 = self.orig_bps[index_for_insert + SECOND].1 - self.orig_bps[index_for_insert + FIRST].1;
                 let delta_y2 = self.orig_bps[index_for_insert + THIRD].1 - self.orig_bps[index_for_insert + SECOND].1;
-            
-                if ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() <  ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() {
-                        ratio = ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() / ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt();
+
+                let x1: f32;
+                let y1: f32;
+                let x2: f32;
+                let y2: f32;
+
+                if ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() < ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() {
+                    ratio = ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() / ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt();
+                    x1 = self.orig_bps[index_for_insert + FIRST].0 + delta_x1 * (1.0 - alfa.sin()/self.section_dvder);
+                    y1 = self.orig_bps[index_for_insert + FIRST].1 + delta_y1 * (1.0 - alfa.sin()/self.section_dvder);
+
+                    x2 = self.orig_bps[index_for_insert + SECOND].0 + delta_x2 * ratio * alfa.sin()/self.section_dvder;
+                    y2 = self.orig_bps[index_for_insert + SECOND].1 + delta_y2 * ratio * alfa.sin()/self.section_dvder;
                 }
                 else if ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() >  ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() {
-                        ratio = ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() / ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt();             
+                    ratio = ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() / ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt();
+                    x1 = self.orig_bps[index_for_insert + FIRST].0 + (delta_x1 - delta_x1 * ratio * alfa.sin()/self.section_dvder);
+                    y1 = self.orig_bps[index_for_insert + FIRST].1 + (delta_y1 - delta_y1 * ratio * alfa.sin()/self.section_dvder);
+
+                    x2 = self.orig_bps[index_for_insert + SECOND].0 + delta_x2 * alfa.sin()/self.section_dvder;
+                    y2 = self.orig_bps[index_for_insert + SECOND].1 + delta_y2 * alfa.sin()/self.section_dvder;
                 }
                 else {
-                        ratio = 1.0;
+                    ratio = 1.0;
+                    x1 = self.orig_bps[index_for_insert + FIRST].0 + delta_x1 * (1.0 - alfa.sin()/self.section_dvder);
+                    y1 = self.orig_bps[index_for_insert + FIRST].1 + delta_y1 * (1.0 - alfa.sin()/self.section_dvder);
+
+                    x2 = self.orig_bps[index_for_insert + SECOND].0 + delta_x2 * ratio * alfa.sin()/self.section_dvder;
+                    y2 = self.orig_bps[index_for_insert + SECOND].1 + delta_y2 * ratio * alfa.sin()/self.section_dvder;
                 }
-
-                let x1 = self.orig_bps[index_for_insert + FIRST].0      
-                            + (self.orig_bps[index_for_insert + SECOND].0 - self.orig_bps[index_for_insert + FIRST].0) * (1.0 - alfa.sin()/self.section_dvder);
-                let y1 = self.orig_bps[index_for_insert + FIRST].1
-                            + (self.orig_bps[index_for_insert + SECOND].1 - self.orig_bps[index_for_insert + FIRST].1) * (1.0 - alfa.sin()/self.section_dvder);
-
-                let x2 = self.orig_bps[index_for_insert + SECOND].0 
-                            + (self.orig_bps[index_for_insert + THIRD].0 - self.orig_bps[index_for_insert + SECOND].0) * ratio * alfa.sin()/self.section_dvder;
-                let y2 = self.orig_bps[index_for_insert + SECOND].1
-                            + (self.orig_bps[index_for_insert + THIRD].1 - self.orig_bps[index_for_insert + SECOND].1) * ratio * alfa.sin()/self.section_dvder;
-        
                 self.orig_bps.insert(index_for_insert + 1, (x1, y1)); 
                 self.orig_bps.insert(index_for_insert + 3, (x2, y2)); 
                 self.orig_bps.remove(index_for_insert + 2);
