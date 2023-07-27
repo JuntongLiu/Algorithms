@@ -65,8 +65,8 @@ impl UserInterface {
 	win.add(&fl2rust_widget_1);
 	let mut choice_1 = Choice::new(795, 460, 25, 25, None);
 	choice_1.set_label("3.0");
-	choice_1.add_choice("3.0|5.0|7.0|9.0|11.0|15.0|25.0");
-    choice_1.end();
+	choice_1.add_choice("2.0|2.5|3.0|3.5|4.0|4.5|5.0|5.5|6.0");
+    	choice_1.end();
 	choice_1.set_down_frame(FrameType::BorderBox);
 	choice_1.set_label_size(10);
 	choice_1.set_text_size(10);
