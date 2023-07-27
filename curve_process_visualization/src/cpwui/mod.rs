@@ -103,6 +103,9 @@ impl ProcessCurve {
 
     fn validate_bps(&mut self) -> Result<u32, i32> {
         let vec_len = self.orig_bps.len();
+        if self.orig_bps.len() < 3 {
+            println!("{} Curve File Error! Number of BPs can not less than 3!{}", '\n', '\n');
+        }
         for n in 0..vec_len {
             if n + 1 < vec_len { 
                 if self.orig_bps[n].0 > self.orig_bps[n+1].0  {
@@ -241,6 +244,7 @@ impl ProcessCurve {
                 } 
                     
                 let sharp_angle = self.delta_tanget[0];
+                let alfa = (sharp_angle / 2.0).to_radians();
                 let mut index_for_insert: usize = 0;
                 for i in 0..self.index_vec.len() {
                     if sharp_angle == self.index_vec[i].1 { 
@@ -271,7 +275,7 @@ impl ProcessCurve {
                 if ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() <  ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() {
                         ratio = ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() / ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt();
                 }
-                else if ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() <  ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() {
+                else if ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() >  ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() {
                         ratio = ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() / ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt();             
                 }
                 else {
@@ -279,14 +283,14 @@ impl ProcessCurve {
                 }
 
                 let x1 = self.orig_bps[index_for_insert + FIRST].0      
-                            + (self.orig_bps[index_for_insert + SECOND].0 - self.orig_bps[index_for_insert + FIRST].0) * (1.0 - 1.0/self.section_dvder);
+                            + (self.orig_bps[index_for_insert + SECOND].0 - self.orig_bps[index_for_insert + FIRST].0) * (1.0 - alfa.sin()/self.section_dvder);
                 let y1 = self.orig_bps[index_for_insert + FIRST].1
-                            + (self.orig_bps[index_for_insert + SECOND].1 - self.orig_bps[index_for_insert + FIRST].1) * (1.0 - 1.0/self.section_dvder);
+                            + (self.orig_bps[index_for_insert + SECOND].1 - self.orig_bps[index_for_insert + FIRST].1) * (1.0 - alfa.sin()/self.section_dvder);
 
                 let x2 = self.orig_bps[index_for_insert + SECOND].0 
-                            + (self.orig_bps[index_for_insert + THIRD].0 - self.orig_bps[index_for_insert + SECOND].0) * ratio * 1.0/self.section_dvder;
+                            + (self.orig_bps[index_for_insert + THIRD].0 - self.orig_bps[index_for_insert + SECOND].0) * ratio * alfa.sin()/self.section_dvder;
                 let y2 = self.orig_bps[index_for_insert + SECOND].1
-                            + (self.orig_bps[index_for_insert + THIRD].1 - self.orig_bps[index_for_insert + SECOND].1) * ratio * 1.0/self.section_dvder;
+                            + (self.orig_bps[index_for_insert + THIRD].1 - self.orig_bps[index_for_insert + SECOND].1) * ratio * alfa.sin()/self.section_dvder;
         
                 self.orig_bps.insert(index_for_insert + 1, (x1, y1)); 
                 self.orig_bps.insert(index_for_insert + 3, (x2, y2)); 
