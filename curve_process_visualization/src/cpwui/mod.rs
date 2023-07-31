@@ -366,6 +366,9 @@ impl ProcessCurve {
         self.orig_bps.clear();
         self.orig_bps = self.backup_reset.to_vec();
     }
+    pub fn get_number_bps(& self) -> usize {
+        return self.orig_bps.len();
+    }
 }
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
