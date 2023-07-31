@@ -47,14 +47,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
           if let Some(msg) = r.recv() {
               match msg {
                     Message::Increment => {
-			if pcbp.process_bps(1) == Ok(0) {
+			if pcbp.get_number_bps() != 2 {
+			    if pcbp.process_bps(1) == Ok(0) {
                         	ui.frame_num_bps.set_label(&(label +1).to_string());
                     		if pcbp.get_divider_flag() == false {
 					pcbp.set_divider_flag();
 				}
-			}
-			else {
+			    }
+			    else {
 				panic!("Add BP error! Error process curve breakpoints!");
+			    }
 			}
 		    }
                     Message::Decrement => {
