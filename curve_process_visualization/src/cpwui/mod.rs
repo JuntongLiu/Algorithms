@@ -13,32 +13,33 @@ use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 use std::num::ParseFloatError;
+use std::f32::consts::PI;
 use fltk::{prelude::*};
+
 pub mod ui;
 use crate::ui::{UserInterface};
 
 #[derive(Debug)]
 #[derive(Clone)]     
 pub struct ProcessCurve {
-    pub orig_bps: Vec<(f32, f32)>,
-    pub backup_reset: Vec<(f32, f32)>,
-    delta_tanget: Vec<f32>,
-    index_vec: Vec<(usize, f32)>,
+    pub active_bps: Vec<(f32, f32)>,
+    pub orig_bps: Vec<(f32, f32)>,   
+    delta_alfa_tangent: Vec<f32>,          
+    index_vec: Vec<(usize, f32)>, 
     pub file_name: String,
-    pub section_dvder: f32,
-    pub divider_hasbeen_set: bool,
+    pub section_dvder: f32, 
+    pub divider_hasbeen_set: bool, 
 }
 
-
 impl ProcessCurve {
-    pub fn new() -> Self {      // constructor
+    pub fn new() -> Self {     
         Self {
-            orig_bps: Vec::new(),
-            backup_reset: Vec::new(),
-            delta_tanget: Vec::new(),
+            active_bps: Vec::new(),
+            orig_bps: Vec::new(),  
+            delta_alfa_tangent: Vec::new(),
             index_vec: Vec::new(),
             file_name: String::new(),
-            section_dvder: 3.0,
+            section_dvder: 3.0, 
             divider_hasbeen_set: false,
         }
     }
@@ -50,17 +51,16 @@ impl ProcessCurve {
                     let pair = pair.trim();
                     let sp_elem: Vec<&str> = pair.split(&[' ', '\t'][..])
                                                 .collect::<Vec<_>>();
-                    // Make it more tolerant
                     let elem = sp_elem
                                     .into_iter()
                                     .filter(|item| item.len() > 1)
                                     .collect::<Vec<&str>>();
-                    if elem.len() == 3 {       // with index
+                    if elem.len() == 3 {       // with index number
                         let x = elem[1].parse::<f32>().unwrap();
                         let y = elem[2].parse::<f32>().unwrap();
-                        self.orig_bps.push((x, y));
+                        self.active_bps.push((x, y)); 
                     }
-                    else if elem.len() == 2 {  // without index
+                    else if elem.len() == 2 {  // without index number
                         let x = convert_str_to_number(&elem[0]);
                         if x.is_err() {
                             panic!("Error convert x from string to number!");
@@ -70,7 +70,7 @@ impl ProcessCurve {
                         if y.is_err() {
                             panic!("Error convert y from string to number!");
                         }
-                        self.orig_bps.push((x.unwrap(), y.unwrap()));
+                        self.active_bps.push((x.unwrap(), y.unwrap())); 
                     }
                     else if elem.len() == 0 {
                         continue;
@@ -91,115 +91,151 @@ impl ProcessCurve {
             return Err(-1);
         }
 
-        if self.orig_bps.len() < 3 {
+        if self.active_bps.len() < 3 {
             println!("File must contain more than 3 BPs.");
             return Err(-1);
         }
 
-        ui.frame_num_bps.set_label(&self.orig_bps.len().to_string());
+        ui.frame_num_bps.set_label(&self.active_bps.len().to_string());
         
         Ok(0)
     }
+       
 
     fn validate_bps(&mut self) -> Result<u32, i32> {
-        let vec_len = self.orig_bps.len();
-        if self.orig_bps.len() < 3 {
-            println!("{} Curve File Error! Number of BPs can not less than 3!{}", '\n', '\n');
-        }
+        
+        let vec_len = self.active_bps.len();
         for n in 0..vec_len {
-            if n + 1 < vec_len { 
-                if self.orig_bps[n].0 > self.orig_bps[n+1].0  {
-                    println!("{}Curve File Error! x must be in increasing order!!! Correct the curve file and try again!{}", '\n', '\n');
-                    return Err(-1);  
-                }
-                if (self.orig_bps[n].0 == self.orig_bps[n+1].0) && (self.orig_bps[n].1 == self.orig_bps[n+1].1) {
+            if n + 2 < vec_len { 
+                if (self.active_bps[n].0 == self.active_bps[n+1].0)  && (self.active_bps[n].1 == self.active_bps[n+1].1) 
+                    || (self.active_bps[n].0 == self.active_bps[n+2].0)  && (self.active_bps[n].1 == self.active_bps[n+2].1) 
+                    || (self.active_bps[n+2].0 == self.active_bps[n+1].0)  && (self.active_bps[n+2].1 == self.active_bps[n+1].1){
                     println!("{}Curve File Error! Duplicated breakpoints should be deleted!{}", '\n', '\n');
                     return Err(-1);
                 }
             }
-            if n + 2 < vec_len {
-                if (self.orig_bps[n].0 == self.orig_bps[n+1].0) && (self.orig_bps[n+1].0 == self.orig_bps[n+2].0) {
-                    if self.orig_bps[n].1 > self.orig_bps[n+1].1 {
-                        if self.orig_bps[n+2].1 >= self.orig_bps[n+1].1 {
-                            println!("{}Curve File Error! Line section should not turn 180 degree backward!{}", '\n', '\n');
-                            return Err(-1);
-                        }
-                    }
-                    if self.orig_bps[n].1 < self.orig_bps[n+1].1 {
-                        if self.orig_bps[n+2].1 <= self.orig_bps[n+1].1 {
-                            println!("{}Curve File Error! Line section should not turn 180 degree backward!{}", '\n', '\n');
-                            return Err(-1);
-                        }
-                    }
-                }
-            }
-        };
-        self.backup_reset = self.orig_bps.clone();
-        
+        }
+
+        self.orig_bps = self.active_bps.clone();  
         Ok(0)
     }
 
-    fn calculate_delta_tangent(&mut self) -> Result<u16, i16> {
+
+    fn calculate_tangent_alfa(&mut self) -> Result<u16, i16> {
         const FIRST: usize = 0;
         const SECOND: usize = 1;
         const THIRD: usize = 2;
         let mut orig_index = 0;
-        let orig_len = self.orig_bps.len();
+        let orig_len = self.active_bps.len();
         
-        self.delta_tanget.clear();
+        self.delta_alfa_tangent.clear();
         self.index_vec.clear();
-        loop {
-            let delta_x1 = self.orig_bps[orig_index + SECOND].0  - self.orig_bps[orig_index + FIRST].0;
-            let delta_y1 = self.orig_bps[orig_index + SECOND].1  - self.orig_bps[orig_index + FIRST].1;
 
-            let delta_x2 = self.orig_bps[orig_index + THIRD].0 - self.orig_bps[orig_index + SECOND].0;
-            let delta_y2 = self.orig_bps[orig_index + THIRD].1 - self.orig_bps[orig_index + SECOND].1;
+        loop {
+            let delta_x1 = self.active_bps[orig_index + SECOND].0 - self.active_bps[orig_index + FIRST].0;
+            let delta_y1 = self.active_bps[orig_index + SECOND].1 - self.active_bps[orig_index + FIRST].1;
+            let delta_x2 = self.active_bps[orig_index + THIRD].0 - self.active_bps[orig_index + SECOND].0;
+            let delta_y2 = self.active_bps[orig_index + THIRD].1 - self.active_bps[orig_index + SECOND].1;
             
-            let alfa: f32;
-            let alfa1 = delta_y1.atan2(delta_x1).to_degrees();
-            let alfa2 = delta_y2.atan2(delta_x2).to_degrees();
-            if (delta_y1 >= 0_f32 && delta_y2 >= 0_f32) || (delta_y1 <= 0_f32 && delta_y2 <= 0_f32) {
-                if alfa1.abs() != 90_f32 && alfa2.abs() != 90_f32 {
-                    alfa = 180_f32 - (alfa1 - alfa2).abs();
-                    self.delta_tanget.push(alfa);
-                }
-                else { 
-                    alfa = alfa1.abs() + alfa2.abs();
-                    self.delta_tanget.push(alfa);
-                }
+            let mut alfa: f32;
+            let alfa1 = delta_y1.atan2(delta_x1); 
+            let alfa2 = delta_y2.atan2(delta_x2);
+
+            if alfa1 == 0_f32 && alfa2 == 0_f32 || alfa1 == PI && alfa2 == PI  ||
+                alfa1 == PI/2.0 && alfa2 == PI/2.0 || alfa1 == -PI/2.0 && alfa2 == -PI/2.0 {
+                alfa = PI;
             }
-            else if (delta_y1 >= 0_f32 && delta_y2 <= 0_f32) || (delta_y1 <= 0_f32 && delta_y2 >= 0_f32) {
-                if alfa1.abs() != 90_f32 && alfa2.abs() != 90_f32 {
-                    alfa = 180_f32 - (alfa1.abs() + alfa2.abs());
-                    self.delta_tanget.push(alfa);
+            else if alfa1 == PI/2.0 && alfa2 != PI/2.0 {
+                if alfa2 > 0_f32 {
+                    if alfa2 < PI/2.0 {
+                        alfa = PI/2.0 + alfa2;
+                    }
+                    else {
+                        alfa = PI*3.0/2.0 - alfa2;
+                    }
                 }
                 else {
-                    alfa = (alfa1 + alfa2).abs();
-                    self.delta_tanget.push(alfa);
+                    alfa = (PI/2.0 - alfa2.abs()).abs();
                 }
             }
+            else if alfa2 == PI/2.0 && alfa1 != PI/2.0 {
+                if alfa1 < 0_f32 {
+                    alfa = (PI/2.0 - alfa1.abs()).abs();
+                }
+                else {
+                    if alfa1 < PI/2.0 {   
+                        alfa = PI/2.0 + alfa1; 
+                    }
+                    else {   
+                            alfa = 3.0*PI/2.0 - alfa1;
+                    }
+                }
+            }
+            else if alfa1 == -PI/2.0  && alfa2 != -PI/2.0 {
+                if alfa2 > 0_f32 {
+                    alfa =  (PI/2.0 - alfa2).abs();
+                }
+                else {
+                    if alfa2 > -PI/2.0 {
+                        alfa = PI/2.0 + alfa2.abs();
+                    }
+                    else {
+                        alfa = 3.0*PI/2.0 - alfa2.abs();
+                    }
+                }
+            }
+            else if alfa2 == -PI/2.0 && alfa1 != -PI/2.0 {
+                if alfa1 > 0_f32 {
+                    alfa = (PI/2.0 - alfa1).abs();
+                }
+                else { 
+                    if alfa1 > -PI/2.0 {
+                        alfa = PI/2.0 + alfa1.abs();
+                    }
+                    else { 
+                        alfa = 3.0*PI/2.0 - alfa1.abs();
+                    }
+                }
+            }
+            else if alfa1 >= 0_f32 && alfa2 >= 0_f32  || alfa1 <= 0_f32 && alfa2 <= 0_f32 {
+                alfa = (PI - (alfa1.abs() - alfa2.abs()).abs()).abs();
+            }
+            else if alfa1 >= 0_f32 && alfa2 <= 0_f32 || alfa1 <= 0_f32 && alfa2 >= 0_f32 {
+                alfa = (PI - (alfa1.abs() + alfa2.abs()).abs()).abs();
+            }
+            else {
+                panic!("Error calculating alfa!");
+            }
+
+            if alfa == 0_f32 {
+                alfa = PI;
+            }
+            self.delta_alfa_tangent.push(alfa);
+
             if orig_index + 1 <= orig_len - 1 {
                 orig_index += 1;
             }
+
             if orig_index + 2 <= orig_len - 1 {
                 continue;
             }
             else {
                 break;
             }
-        }
 
-        for i in 0..self.delta_tanget.len() {
-            let elem = (i, self.delta_tanget[i]);
+        }
+    
+        for i in 0..self.delta_alfa_tangent.len() {
+            let elem = (i, self.delta_alfa_tangent[i]);
             self.index_vec.push(elem);
         }
         
-        self.delta_tanget.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        self.delta_alfa_tangent.sort_by(|a, b| a.partial_cmp(b).unwrap());  
 
         Ok(0)
+
     }
 
-  
     pub fn process_bps(&mut self, num_bps_to_update: i32) -> Result<u32, i32> {
         const ADDITION: u32 = 1;
         const DEDUCTION: u32 = 0;
@@ -207,50 +243,50 @@ impl ProcessCurve {
         const SECOND: usize = 1;
         const THIRD: usize = 2;
         let mut operation_flag: u32 = 3; 
-        let orig_len = self.orig_bps.len();
 
-        let num_bps = orig_len as i32 + num_bps_to_update;
+        let orig_len = self.active_bps.len();
 
+        let num_bps = orig_len as i32 + num_bps_to_update;        
         if (num_bps_to_update < 0) && (num_bps >= 2) {
-                operation_flag = DEDUCTION;
-        }
+            operation_flag = DEDUCTION;
+        }  
         else if num_bps_to_update > 0 {
-                operation_flag = ADDITION;
+            operation_flag = ADDITION;
         }
         else if num_bps < 2 {
-                println!("{}Error! The minimum number of breakpoint one can have is 2  Try again!", '\n');
+            println!("{}Error! The minimum number of breakpoint one can have is 2  Try again!", '\n');
         }
-      
+        
         match operation_flag {
             DEDUCTION => {
-                if self.calculate_delta_tangent() != Ok(0) {
+                if self.calculate_tangent_alfa() != Ok(0) {
                     println!("Error calculate delta-tangent!");
                     panic!("Error!");
                 } 
                 
-                let tmplen = self.delta_tanget.len();
+                let tmplen = self.delta_alfa_tangent.len();
                 if tmplen >= 1 {
-                    let biggest_angle = self.delta_tanget[tmplen - 1];
+                    let biggest_angle = self.delta_alfa_tangent[tmplen - 1];
                     let temp = self.index_vec.iter().find(|&elem| elem.1 == biggest_angle);
                     let (index_to_remove, _) = temp.expect("Error, try to find index for remove!");
-                    self.orig_bps.remove(*index_to_remove + 1);
-                }        
+                    self.active_bps.remove(*index_to_remove + 1);
+                }
             },
 
             ADDITION => {
-                if self.calculate_delta_tangent() != Ok(0) {
+                if self.calculate_tangent_alfa() != Ok(0) {
                     println!("Error calculate delta-tangent!");
                     panic!("Error!");
                 } 
-                    
-                let sharp_angle = self.delta_tanget[0];
-                let alfa = (sharp_angle / 2.0).to_radians();
+                
+                let sharp_angle = self.delta_alfa_tangent[0];
+                let alfa = sharp_angle / 2.0;
                 let mut index_for_insert: usize = 0;
                 for i in 0..self.index_vec.len() {
                     if sharp_angle == self.index_vec[i].1 { 
                         index_for_insert = self.index_vec[i].0;
                         if self.index_vec.len() > i + 1 {                   
-                            if sharp_angle == self.index_vec[i + 1].1 {
+                            if sharp_angle == self.index_vec[i + 1].1 { 
                                 continue;
                             }
                             else {
@@ -265,56 +301,60 @@ impl ProcessCurve {
                         continue;
                     }
                 }
-
+    
                 let ratio: f32;
-                let delta_x1 = self.orig_bps[index_for_insert + SECOND].0 - self.orig_bps[index_for_insert + FIRST].0;
-                let delta_x2 = self.orig_bps[index_for_insert + THIRD].0 - self.orig_bps[index_for_insert + SECOND].0;
-                let delta_y1 = self.orig_bps[index_for_insert + SECOND].1 - self.orig_bps[index_for_insert + FIRST].1;
-                let delta_y2 = self.orig_bps[index_for_insert + THIRD].1 - self.orig_bps[index_for_insert + SECOND].1;
-
+                let delta_x1 = self.active_bps[index_for_insert + SECOND].0 - self.active_bps[index_for_insert + FIRST].0;
+                let delta_x2 = self.active_bps[index_for_insert + THIRD].0 - self.active_bps[index_for_insert + SECOND].0;
+                let delta_y1 = self.active_bps[index_for_insert + SECOND].1 - self.active_bps[index_for_insert + FIRST].1;
+                let delta_y2 = self.active_bps[index_for_insert + THIRD].1 - self.active_bps[index_for_insert + SECOND].1;
+    
                 let x1: f32;
                 let y1: f32;
                 let x2: f32;
                 let y2: f32;
-
+                
                 if ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() < ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() {
                     ratio = ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() / ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt();
-                    x1 = self.orig_bps[index_for_insert + FIRST].0 + delta_x1 * (1.0 - alfa.sin()/self.section_dvder);
-                    y1 = self.orig_bps[index_for_insert + FIRST].1 + delta_y1 * (1.0 - alfa.sin()/self.section_dvder);
+                    x1 = self.active_bps[index_for_insert + FIRST].0 + delta_x1 * (1.0 - alfa.sin()/self.section_dvder);
+                    y1 = self.active_bps[index_for_insert + FIRST].1 + delta_y1 * (1.0 - alfa.sin()/self.section_dvder);
 
-                    x2 = self.orig_bps[index_for_insert + SECOND].0 + delta_x2 * ratio * alfa.sin()/self.section_dvder;
-                    y2 = self.orig_bps[index_for_insert + SECOND].1 + delta_y2 * ratio * alfa.sin()/self.section_dvder;
+                    x2 = self.active_bps[index_for_insert + SECOND].0 + delta_x2 * ratio * alfa.sin()/self.section_dvder;
+                    y2 = self.active_bps[index_for_insert + SECOND].1 + delta_y2 * ratio * alfa.sin()/self.section_dvder;
                 }
                 else if ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt() >  ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() {
-                    ratio = ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() / ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt();
-                    x1 = self.orig_bps[index_for_insert + FIRST].0 + (delta_x1 - delta_x1 * ratio * alfa.sin()/self.section_dvder);
-                    y1 = self.orig_bps[index_for_insert + FIRST].1 + (delta_y1 - delta_y1 * ratio * alfa.sin()/self.section_dvder);
+                    ratio = ((delta_x2 * delta_x2) + (delta_y2 * delta_y2)).sqrt() / ((delta_x1 * delta_x1) + (delta_y1 * delta_y1)).sqrt();             
+                    x1 = self.active_bps[index_for_insert + FIRST].0 + (delta_x1 - delta_x1 * ratio * alfa.sin()/self.section_dvder);
+                    y1 = self.active_bps[index_for_insert + FIRST].1 + (delta_y1 - delta_y1 * ratio * alfa.sin()/self.section_dvder);
 
-                    x2 = self.orig_bps[index_for_insert + SECOND].0 + delta_x2 * alfa.sin()/self.section_dvder;
-                    y2 = self.orig_bps[index_for_insert + SECOND].1 + delta_y2 * alfa.sin()/self.section_dvder;
+                    x2 = self.active_bps[index_for_insert + SECOND].0 + delta_x2 * alfa.sin()/self.section_dvder;
+                    y2 = self.active_bps[index_for_insert + SECOND].1 + delta_y2 * alfa.sin()/self.section_dvder;
                 }
                 else {
                     ratio = 1.0;
-                    x1 = self.orig_bps[index_for_insert + FIRST].0 + delta_x1 * (1.0 - alfa.sin()/self.section_dvder);
-                    y1 = self.orig_bps[index_for_insert + FIRST].1 + delta_y1 * (1.0 - alfa.sin()/self.section_dvder);
+                    x1 = self.active_bps[index_for_insert + FIRST].0 + delta_x1 * (1.0 - alfa.sin()/self.section_dvder);
+                    y1 = self.active_bps[index_for_insert + FIRST].1 + delta_y1 * (1.0 - alfa.sin()/self.section_dvder);
 
-                    x2 = self.orig_bps[index_for_insert + SECOND].0 + delta_x2 * ratio * alfa.sin()/self.section_dvder;
-                    y2 = self.orig_bps[index_for_insert + SECOND].1 + delta_y2 * ratio * alfa.sin()/self.section_dvder;
-                }
-                self.orig_bps.insert(index_for_insert + 1, (x1, y1)); 
-                self.orig_bps.insert(index_for_insert + 3, (x2, y2)); 
-                self.orig_bps.remove(index_for_insert + 2);
-            },
-            _ => (),
-        }
+                    x2 = self.active_bps[index_for_insert + SECOND].0 + delta_x2 * ratio * alfa.sin()/self.section_dvder;
+                    y2 = self.active_bps[index_for_insert + SECOND].1 + delta_y2 * ratio * alfa.sin()/self.section_dvder;
+                }  
+            
+                self.active_bps.insert(index_for_insert + 1, (x1, y1)); 
+                self.active_bps.insert(index_for_insert + 3, (x2, y2)); 
+                // remove the element cause
+                self.active_bps.remove(index_for_insert + 2);
+
+                },
+                _ => (),
+            }
 
         Ok(0)
     }
 
-    pub fn print_result(&mut self) {
-        println!("{}{} breakpoints have been picked. They are: {}", '\n', self.orig_bps.len(), '\n'); 
-        for i in 0..self.orig_bps.len(){
-            println!("{}.)   {}  {} ", i, self.orig_bps[i].0, self.orig_bps[i].1);  
+
+    pub fn print_result(&mut self) { 
+        println!("{}{} breakpoints have been picked. They are: {}", '\n', self.active_bps.len(), '\n'); 
+        for i in 0..self.active_bps.len(){
+            println!("{}.)   {}  {} ", i, self.active_bps[i].0, self.active_bps[i].1);  
         }
         println!("");
 
@@ -325,8 +365,8 @@ impl ProcessCurve {
         let mut mini_x: f32 = 0_f32;
         let mut max_y: f32 = 0_f32;
         let mut mini_y: f32 = 0_f32;
-        if self.orig_bps.len() > 3 {
-            for elem in &self.orig_bps {
+        if self.active_bps.len() > 3 {
+            for elem in &self.active_bps {
                 if elem.0 > max_x {
                     max_x = elem.0;
                 }
@@ -342,7 +382,7 @@ impl ProcessCurve {
             }
             max_x += 1_f32;
             mini_x -= 1_f32;
-            max_y += 1_f32;
+            max_y += 1_f32; 
             mini_y -= 1_f32;
             (mini_x, max_x, mini_y, max_y)
         }
@@ -352,22 +392,21 @@ impl ProcessCurve {
     }
 
     pub fn set_divider(&mut self, dvder: f32) {     
-            self.section_dvder = dvder;
+        self.section_dvder = dvder;
     }
 
     pub fn get_divider_flag(&mut self) -> bool {
         return self.divider_hasbeen_set;
     }
-    
     pub fn set_divider_flag(&mut self) {
         self.divider_hasbeen_set = true;
     }
-    pub fn reset_bps(&mut self) {
-        self.orig_bps.clear();
-        self.orig_bps = self.backup_reset.to_vec();
+    pub fn reset_bps(&mut self) {  
+        self.active_bps.clear();
+        self.active_bps = self.orig_bps.to_vec();
     }
-    pub fn get_number_bps(& self) -> usize {
-        return self.orig_bps.len();
+    pub fn get_number_bps(& self) -> usize { 
+        return self.active_bps.len();
     }
 }
 
@@ -399,12 +438,11 @@ pub fn run(pobj: &mut ProcessCurve, ui: &mut UserInterface) -> Result<u32, i32> 
             return Err(-1);
         }
 
-        if file_name.len() == 0 {
+        if file_name.len() == 0 { 
             file_name = String::from("./test.curve");
         }
 
         println!("You have typed in: {}.", file_name);
-        // check to see if the file exist
         let file_check = std::path::Path::new(&file_name).exists();
         if file_check != true {
             println!("{}File {} does not exist! Try again!", '\n', file_name);
