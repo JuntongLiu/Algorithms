@@ -141,8 +141,8 @@ impl ProcessCurve {
             let alfa1 = delta_y1.atan2(delta_x1); 
             let alfa2 = delta_y2.atan2(delta_x2);
 
-            if alfa1 == 0_f32 && alfa2 == 0_f32 || alfa1 == PI && alfa2 == PI  ||
-                alfa1 == PI/2.0 && alfa2 == PI/2.0 || alfa1 == -PI/2.0 && alfa2 == -PI/2.0 {
+            /*if alfa1 == 0_f32 && alfa2 == 0_f32 || alfa1 == PI && alfa2 == PI  || */
+            if  alfa1 == PI/2.0 && alfa2 == PI/2.0 || alfa1 == -PI/2.0 && alfa2 == -PI/2.0 {
                 alfa = PI;
             }
             else if alfa1 == PI/2.0 && alfa2 != PI/2.0 {
