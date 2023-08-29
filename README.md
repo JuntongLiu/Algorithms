@@ -1,5 +1,5 @@
 # Algorithms
-## A collection of C, C++ and Rust implementations of some interesting topics.
+## C, C++ and Rust implementations of some interesting topics.
 
 ***<span style="color:green;">See comments</span> in the codes for detail about the programs:***
 
